@@ -1,11 +1,11 @@
 <template>
   <div>
-    <p>test tag</p>
+    <p>{{ count }}</p>
   </div>
 </template>
 
-<script lang="ts" setup>
-
+<script lang="ts" setup> 
+  const { data: count } = await useFetch('/api/testing')
 </script>
 
 <style>
