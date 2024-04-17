@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup> 
-  const { data: count } = await useFetch('/api/testing')
+  const { data: count } = await useFetch('/controller')
 </script>
 
 <style>
