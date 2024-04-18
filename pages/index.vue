@@ -1,16 +1,10 @@
 <template>
   <div>
-    <p>{{ count }}</p>
-    <p class="text-4xl">{{ countNew }}</p>
-    <button @click="countNew++">Count + 1</button>
+    <p>Data below is from the server, when getting person with id 1</p>
+    <p class="text-3xl w-full mx-auto">{{ data }}</p>
   </div>
 </template>
 
 <script lang="ts" setup> 
-  const { data: count } = await useFetch('/controller')
-  const countNew = ref(0)
+  const { data } = await useFetch('/api/person')
 </script>
-
-<style>
-
-</style>

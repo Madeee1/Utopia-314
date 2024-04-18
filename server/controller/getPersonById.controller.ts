@@ -1,14 +1,13 @@
-import { Person } from '~/server/class/person.class';
 import { PersonRepository } from '~/server/entity/person.entity';
 
 export class PersonController {
     constructor() {}
 
-    getNameOfPerson(person: Person) {
+    getNameOfPersonById(id: number) {
         // CALL REPOSITORY
         const repository = new PersonRepository()
-
-        return {"contMessage": "message from controller", "repoMessage": repository.getNameOfPerson(person)}
         
+        // Example: db query according to this person's id
+        return repository.getNameOfPersonById(id)
     }
 }
