@@ -6,6 +6,6 @@ export class PersonRepository {
     getNameOfPerson(person: Person) {
         // Example: db query according to this person's name
         const name = person.getName()
-        return name + " THIS IS FROM THE REPOSITORY"
+        return name + " got from MongoDB"
     }
 }
