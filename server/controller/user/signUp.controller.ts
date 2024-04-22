@@ -1,5 +1,22 @@
 import axios from 'axios';
+import { userEntity } from '~/server/entity/user.entity';
+import { UserDto } from '~/server/entity/dto/user.dto';
 
+// Accepts POST data from API at /api/signup
+// Does business logic here, and constructs repository object to interact with database
+export class signUpController {
+    constructor() {}
+
+    async signUp(event: any) {
+        const body: UserDto = await readBody(event)
+
+        const userRepo = new userEntity()
+        return await userRepo.signUp(event, body)
+    }
+
+}
+
+/*
 export const actions = {
     async signUp({ commit }: { commit: any }, formData: any) {
         try {
@@ -13,4 +30,4 @@ export const actions = {
         }
     }
 }
-  
+*/
