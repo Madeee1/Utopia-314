@@ -8,10 +8,12 @@ import { userSchema } from '../models/user.schema';
 export class userEntity {
     constructor() {}
 
+    // CREATE user is here
     async signUp(event: any, body: UserDto) {
         // Create user in the database
         // Return the created user
         try {
+            console.log(body)
             const response = await userSchema.create({
                 username: body.username,
                 email: body.email,
