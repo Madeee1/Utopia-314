@@ -1,5 +1,6 @@
 import { defineMongooseModel } from '#nuxt/mongoose'
 import bcrypt from 'bcrypt';
+import { Types } from 'mongoose';
 
 export const userSchema = defineMongooseModel({
     name: "User",
@@ -16,6 +17,13 @@ export const userSchema = defineMongooseModel({
             type: String,
             required: true,
         },
+        // @ts-ignore
+        uuid: {
+            type: Types.ObjectId,
+            required: true,
+            unique: true,
+            default: () => new Types.ObjectId(),
+        }
     },
     hooks(schema) {
         // Add a pre-save hook to hash the password
