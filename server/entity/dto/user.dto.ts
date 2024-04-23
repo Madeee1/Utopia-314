@@ -5,4 +5,5 @@ export class UserDto {
     hashPassword!: string;
     email!: string;
     password!: string;
+    role!: string;
 }
