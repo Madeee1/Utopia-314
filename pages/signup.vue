@@ -20,13 +20,15 @@
       </select>
       
       <button type="submit">Sign Up</button>
-      <!-- // <p v-if="signUpStatus === 'success'">Signup successful!</p> 
-      <p v-if="signUpStatus === 'error'">Signup failed. Please try again.</p> -->
+      <p v-if="signUpError === true" class="text-rose-500">Sign Up failed. Please try again.</p>
+      <p v-else-if="signUpError === false" class="text-green-500">Sign Up successful. Redirecting to Sign In page...</p>
     </form>
     </div>
   </template>
   
   <script>
+  import { signUpController } from '~/server/controller/user/signUp.controller';
+
   export default {
     data() {
       return {
@@ -35,11 +37,22 @@
           email: '',
           password: '',
           role: '',
-        }
+        },
+        signUpError: null,
       };
     },
     methods: {
       async handleSubmit() {
+        const controller = await signUpController(this.formData);
+        if (controller.statusCode === 200) {
+          this.signUpError = false;
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+          this.$router.push('/signin');
+        } else {
+          this.signUpError = true;
+        }
+      },
+      async handleSubmit2() {
         const signUp = await $fetch('/api/signup', {
           method: 'POST',
           headers: {

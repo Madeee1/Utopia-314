@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { UserDto } from './dto/user.dto';
-import { userSchema } from '../models/user.schema';
+import { UserDto } from '~/server/entity/dto/user.dto';
+import { userSchema } from '~/server/models/user.schema';
 
 // Gets data from controller, and gets data from the database
 // Returns the data to the controller
@@ -9,24 +9,20 @@ export class userEntity {
     constructor() {}
 
     // CREATE user is here
-    async signUp(event: any, body: UserDto) {
+    async signUp(formData: UserDto) {
         // Create user in the database
         // Return the created user
         try {
-            console.log(body)
             const response = await userSchema.create({
-                username: body.username,
-                email: body.email,
-                hashPassword: body.password,
-                role: body.role
+                username: formData.username,
+                email: formData.email,
+                hashPassword: formData.password,
+                role: formData.role
             });
-            return "User created successfully!"
+            return {statusCode: 201, message: 'User created successfully', data: response}
         }
         catch (error: any) {
-            throw createError({
-                statusCode: 400,
-                message: error.message,
-            })
+            return {statusCode: 400, message: 'Error creating user', data: error}
         }
     }
 
