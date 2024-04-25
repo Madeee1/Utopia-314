@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserDto } from './dto/user.dto';
+import { userSchema } from '../models/user.schema';
 
 // Gets data from controller, and gets data from the database
 // Returns the data to the controller
@@ -17,6 +18,7 @@ export class userEntity {
                 username: body.username,
                 email: body.email,
                 hashPassword: body.password,
+                role: body.role
             });
             return "User created successfully!"
         }
