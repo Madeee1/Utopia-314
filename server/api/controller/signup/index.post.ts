@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-export class signUpController {
+class signUpController {
   constructor() {}
 
   async signUp(event: any) {
