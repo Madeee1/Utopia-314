@@ -7,9 +7,11 @@ import { UserDto } from '~/server/entity/dto/user.dto';
 export class signUpController {
     constructor() {}
 
-    async signUp(formData: any) {
+    async signUp(event: any) {
+        const body: UserDto = await readBody(event)
+
         const userRepo = new userEntity()
-        return await userRepo.signUp(formData)
+        return await userRepo.signUp(event, body)
     }
 
 }
