@@ -40,7 +40,7 @@
     },
     methods: {
       async handleSubmit() {
-        const signUp = await $fetch('/api/signup', {
+        const signUp = await $fetch('/api/controller/signup', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
