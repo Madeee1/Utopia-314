@@ -5,37 +5,37 @@ import bcrypt from 'bcrypt';
 
 // Gets data from controller, and gets data from the database
 // Returns the data to the controller
+export async function comparePassword(password: string, hashPassword: string): Promise<boolean> {
+    return bcrypt.compare(password, hashPassword);
+}
 
 export class userEntity {
     constructor() {}
     // SIGN IN user is here
     async signIn(event: any, body: UserDto) {
-        // Find user in the database based on email
-        // Check if password matches
-        // Return the user if successful
-        try {
-            const user = await userSchema.findOne({ email: body.email });
-            if (!user) {
-                throw createError({
-                    statusCode: 404,
-                    message: "User not found",
-                });
-            }
-            const isPasswordValid = this.comparePassword(body.password);
-            if (!isPasswordValid) {
-                throw createError({
-                    statusCode: 401,
-                    message: "Invalid password",
-                });
-            }
-            return user;
-        } catch (error: any) {
-            throw createError({
-                statusCode: 400,
-                message: error.message,
-            });
+        const { username, password } = body;
+
+        // Find the user in the database
+        const user = await userSchema.findOne({ username });
+
+        if (!user) {
+            throw new Error('Invalid username or password');
         }
-    }
+
+        // Check the password
+        const isPasswordValid = await comparePassword(password, String(user.hashPassword));
+
+        if (!isPasswordValid) {
+            //throw new Error('Invalid username or password');
+            console.log('Invalid username or password');
+        }
+        else
+        // The username and password are valid
+        // Here you would typically create a JWT and send it to the client
+        // return { message: 'Sign in successful' };
+        console.log('Sign in successful');
+      }
+     
     // CREATE user is here
     async signUp(event: any, body: UserDto) {
         // Create user in the database
@@ -57,11 +57,6 @@ export class userEntity {
             })
         }
     }
-
-    comparePassword(candidatePassword: string) {
-          const user: any = this;
-          return bcrypt.compare(candidatePassword, user.hashPassword);
-        }
 }
 
 /*
