@@ -23,28 +23,41 @@ export default
         };
     },
     methods: {
-        signIn() {
-            // Sign in verification
-            // Redirect the user based on their role
-            if (role === 'System Admin') {
-                // Redirect to admin dashboard
-                // this.$router.push('/admin');
-            } else if (role === 'Buyer') {
-                // Redirect to buyer dashboard
-                // this.$router.push('/buyer');
-            } else if (role === 'Seller') {
-                // Redirect to seller dashboard
-                // this.$router.push('/seller');
-            } else if (role === 'Real Estate Agent') {
-                // Redirect to real estate agent dashboard
-                // this.$router.push('/rEagent');
-            } else {
-                // Invalid role, show an error message
-                // this.errorMessage = 'Invalid role';
-            }
-        }
-    }
-}
+  async handleSubmit() {
+    const signIn = await $fetch('/api/controller/signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: this.username,
+        password: this.password,
+      }),
+    });
+  }
+}}
+//  methods: {
+//         signIn() {
+//             // Sign in verification
+//             // Redirect the user based on their role
+//             if (role === 'System Admin') {
+//                 // Redirect to admin dashboard
+//                 // this.$router.push('/admin');
+//             } else if (role === 'Buyer') {
+//                 // Redirect to buyer dashboard
+//                 // this.$router.push('/buyer');
+//             } else if (role === 'Seller') {
+//                 // Redirect to seller dashboard
+//                 // this.$router.push('/seller');
+//             } else if (role === 'Real Estate Agent') {
+//                 // Redirect to real estate agent dashboard
+//                 // this.$router.push('/rEagent');
+//             } else {
+//                 // Invalid role, show an error message
+//                 // this.errorMessage = 'Invalid role';
+//             }
+//         }
+// } 
 </script>
 
 <style scoped>
