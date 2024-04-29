@@ -53,7 +53,7 @@ export default {
         sessionStorage.setItem("role", role);
         sessionStorage.setItem("email", email);
 
-        this.$router.push("/");
+        this.$router.push("/dashboard");
       }
     },
   },
