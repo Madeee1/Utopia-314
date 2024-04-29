@@ -18,11 +18,15 @@ export class userEntity {
   async signIn(event: any, body: UserDto) {
     const { username, password } = body;
 
+    let user: any;
     // Find the user in the database
-    const user = await userSchema.findOne({ username });
-
-    if (!user) {
-      throw new Error("Invalid username or password");
+    try {
+      user = await userSchema.findOne({ username });
+    } catch (error: any) {
+      throw createError({
+        statusCode: 400,
+        message: error.message,
+      });
     }
 
     // Check the password
@@ -32,13 +36,18 @@ export class userEntity {
     );
 
     if (!isPasswordValid) {
-      //throw new Error('Invalid username or password');
-      console.log("Invalid username or password");
+      throw createError({
+        statusCode: 400,
+        message: "Invalid username or password",
+      });
+    } else {
+      return {
+        ok: true,
+        username: user.username,
+        role: user.role,
+        email: user.email,
+      };
     }
-    // The username and password are valid
-    // Here you would typically create a JWT and send it to the client
-    // return { message: 'Sign in successful' };
-    else console.log("Sign in successful");
   }
 
   // CREATE user is here
