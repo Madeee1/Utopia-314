@@ -4,5 +4,3 @@
     <button @click="$router.push('/signin')">Signin</button>
   </div>
 </template>
-
-<script lang="ts" setup></script>
