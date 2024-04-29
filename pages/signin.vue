@@ -54,6 +54,8 @@ export default {
         sessionStorage.setItem("email", email);
 
         this.$router.push("/dashboard");
+      } else {
+        alert("Sign in failed. Please try again.");
       }
     },
   },
