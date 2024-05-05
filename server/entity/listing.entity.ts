@@ -12,6 +12,7 @@ export class Listing {
     }
   }
 
+
   async createListing(body: any) {
     // This is the function that creates a new listing in the database
     try {
@@ -50,6 +51,21 @@ export class Listing {
     try {
       const listing = await listingSchema.findByIdAndDelete(body._id).exec();
       return { value: listing, ok: true };
+    } catch (error: any) {
+      return { value: false, ok: false, error: error.message };
+    }
+  }  
+
+  async searchListings(query: string) {
+    try {
+      const listings = await listingSchema.find({
+        $or: [
+          { name: { $regex: query, $options: "i" } },
+          { description: { $regex: query, $options: "i" } },
+          { location: { $regex: query, $options: "i" } }
+        ]
+      });
+      return { value: listings, ok: true };
     } catch (error: any) {
       return { value: false, ok: false, error: error.message };
     }
