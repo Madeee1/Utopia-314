@@ -14,15 +14,16 @@ User
     <section class="p-4">
       <h2 class="text-2xl font-semibold mb-4">Property Listings</h2>
       <div>
-    <p><strong>Average Rating: {{ averageRating }}</strong></p>
-  </div>
+        <p>
+          <strong>The Average Rating: {{ averageRating }}</strong>
+        </p>
+      </div>
       <button
-  @click="viewMyRatings"
-  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
->
-  View My Ratings
-</button>
-
+        @click="viewMyRatings"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        View My Ratings
+      </button>
 
       <button
         @click="openCreateModal"
@@ -47,18 +48,18 @@ User
           <p>Price: {{ property.price }}</p>
           <p>Description: {{ property.description }}</p>
           <button
-  @click="showReviewModal(property)"
-  class="mt-2 ml-2 mr-2 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
->
-  Show Reviews
-</button>
+            @click="showReviewModal(property)"
+            class="mt-2 ml-2 mr-2 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Show Reviews
+          </button>
 
-<button
-  @click="removeProperty(property.id)"
-  class="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
->
-  Remove
-</button>
+          <button
+            @click="removeProperty(property.id)"
+            class="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Remove
+          </button>
 
           <button
             @click="updateProperty(property.id)"
@@ -71,37 +72,38 @@ User
     </section>
 
     <div
-  v-if="isMyRatingsModalOpen"
-  class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center"
->
-  <div class="bg-white p-5 rounded w-1/2">
-    <h2 class="text-lg font-bold mb-4">My Ratings</h2>
-    <div class="flex flex-wrap">
-      <div
-        v-for="(rating, index) in myRatings"
-        :key="index"
-        class="w-1/4 p-4 flex flex-col items-center"
-      >
-        <div class="rounded-full bg-blue-500 text-white font-bold w-16 h-16 flex items-center justify-center mb-2">
-          {{ rating.rating }}
+      v-if="isMyRatingsModalOpen"
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center"
+    >
+      <div class="bg-white p-5 rounded w-1/2">
+        <h2 class="text-lg font-bold mb-4">My Ratings</h2>
+        <div class="flex flex-wrap">
+          <div
+            v-for="(rating, index) in myRatings"
+            :key="index"
+            class="w-1/4 p-4 flex flex-col items-center"
+          >
+            <div
+              class="rounded-full bg-blue-500 text-white font-bold w-16 h-16 flex items-center justify-center mb-2"
+            >
+              {{ rating.rating }}
+            </div>
+            <p>
+              <strong>{{ rating.name }}</strong>
+            </p>
+            <p>{{ rating.comment }}</p>
+          </div>
         </div>
-        <p><strong>{{ rating.name }}</strong></p>
-        <p>{{ rating.comment }}</p>
+        <div class="flex justify-end">
+          <button
+            @click="closeMyRatingsModal"
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
-    <div class="flex justify-end">
-      <button
-        @click="closeMyRatingsModal"
-        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
-      >
-        Close
-      </button>
-    </div>
-  </div>
-</div>
-
-
-
 
     <!-- Modal for creating and updating properties -->
     <div
@@ -266,9 +268,6 @@ function closeMyRatingsModal() {
   isMyRatingsModalOpen.value = false;
 }
 
-
-
-
 interface Property {
   id: number;
   name: string;
@@ -392,7 +391,8 @@ const properties = ref([
     name: "Property 10",
     location: "101 Pasir Ris Dr, Singapore",
     price: "SGD 900,000",
-    description: "Affordable 2 bedroom apartment in a family-friendly neighborhood.",
+    description:
+      "Affordable 2 bedroom apartment in a family-friendly neighborhood.",
     reviews: [
       "Good value property, perfect for a starter home!",
       "Family-friendly location with schools and parks nearby.",
@@ -412,7 +412,6 @@ const properties = ref([
     ],
   },
 ]);
-
 
 const searchQuery = ref("");
 const isCreateModalOpen = ref(false);
@@ -526,7 +525,7 @@ label {
   margin-bottom: 0.25rem; /* Space between label and input */
 }
 .review-button {
-    margin-right: 10px; 
+  margin-right: 10px;
 }
 .review-rating {
   width: 4rem;
