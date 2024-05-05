@@ -4,6 +4,18 @@
       <button @click="createListing">Create Listing</button>
       <button @click="getListing">Get Listing</button>
       <button @click="updateListing">Update Listing</button>
+      <input
+        type="text"
+        v-model="updateId"
+        class="border-red-700 border"
+        placeholder="id of listing to update"
+      />
+      <input
+        type="text"
+        v-model="newName"
+        class="border-red-700 border"
+        placeholder="name to update to"
+      />
       <button @click="deleteListing">Delete Listing</button>
       <input
         type="text"
@@ -25,6 +37,8 @@
 <script setup>
 const listings = ref(null);
 const deleteId = ref(null);
+const updateId = ref(null);
+const newName = ref(null);
 
 async function createListing() {
   const response = await $fetch("/api/controller/listing", {
@@ -55,9 +69,8 @@ async function updateListing() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      id: 1,
-      _id: listings.value[0]._id,
-      name: "Updated Listing",
+      _id: getMongoIdById(updateId.value),
+      name: newName.value,
       location: "123123",
       description: "This is an updated listing.",
       price: 200,
