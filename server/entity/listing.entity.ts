@@ -27,4 +27,21 @@ export class Listing {
       return { value: false, ok: false, error: error.message };
     }
   }
+
+  async updateListing(body: any) {
+    // This is the function that updates a listing in the database
+    try {
+      const listing = await listingSchema
+        .findByIdAndUpdate(body._id, {
+          name: body.name,
+          location: body.location,
+          price: body.price,
+          description: body.description,
+        })
+        .exec();
+      return { value: listing, ok: true };
+    } catch (error: any) {
+      return { value: false, ok: false, error: error.message };
+    }
+  }
 }

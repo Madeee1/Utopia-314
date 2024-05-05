@@ -1,17 +1,21 @@
 <template>
   <div>
-    <button @click="createListing">Create Listing</button>
-    <button @click="getListing">Get Listing</button>
+    <div class="flex gap-4">
+      <button @click="createListing">Create Listing</button>
+      <button @click="getListing">Get Listing</button>
+      <button @click="updateListing">Update Listing</button>
+    </div>
     <div v-if="listings" v-for="listing in listings" :key="listing.id">
       <h1>{{ listing.name }}</h1>
       <p>{{ listing.location }}</p>
       <p>{{ listing.description }}</p>
       <p>{{ listing.price }}</p>
+      <p>{{ listing.id }}</p>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 const listings = ref(null);
 
 async function createListing() {
@@ -32,6 +36,23 @@ async function createListing() {
 async function getListing() {
   const response = await $fetch("/api/controller/listing");
   listings.value = response.value;
+}
+
+async function updateListing() {
+  const response = await $fetch("/api/controller/listing", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: 1,
+      _id: listings.value[0]._id,
+      name: "Updated Listing",
+      location: "123123",
+      description: "This is an updated listing.",
+      price: 200,
+    }),
+  });
 }
 </script>
 
