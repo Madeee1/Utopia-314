@@ -44,4 +44,14 @@ export class Listing {
       return { value: false, ok: false, error: error.message };
     }
   }
+
+  async deleteListing(body: any) {
+    // This is the function that deletes a listing in the database
+    try {
+      const listing = await listingSchema.findByIdAndDelete(body._id).exec();
+      return { value: listing, ok: true };
+    } catch (error: any) {
+      return { value: false, ok: false, error: error.message };
+    }
+  }
 }

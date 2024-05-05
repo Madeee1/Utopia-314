@@ -4,6 +4,13 @@
       <button @click="createListing">Create Listing</button>
       <button @click="getListing">Get Listing</button>
       <button @click="updateListing">Update Listing</button>
+      <button @click="deleteListing">Delete Listing</button>
+      <input
+        type="text"
+        v-model="deleteId"
+        class="border-red-700 border"
+        placeholder="id of listing to delete"
+      />
     </div>
     <div v-if="listings" v-for="listing in listings" :key="listing.id">
       <h1>{{ listing.name }}</h1>
@@ -17,6 +24,7 @@
 
 <script setup>
 const listings = ref(null);
+const deleteId = ref(null);
 
 async function createListing() {
   const response = await $fetch("/api/controller/listing", {
@@ -31,6 +39,8 @@ async function createListing() {
       price: 100,
     }),
   });
+
+  getListing();
 }
 
 async function getListing() {
@@ -53,6 +63,33 @@ async function updateListing() {
       price: 200,
     }),
   });
+
+  getListing();
+}
+
+async function deleteListing() {
+  const response = await $fetch("/api/controller/listing", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _id: getMongoIdById(deleteId.value),
+    }),
+  });
+
+  getListing();
+}
+
+function getMongoIdById(id) {
+  if (id === null) return 1;
+  // loop through listings to find the id
+  for (let i = 0; i < listings.value.length; i++) {
+    if (listings.value[i].id === parseInt(id)) {
+      return listings.value[i]._id;
+    }
+  }
+  return null;
 }
 </script>
 
