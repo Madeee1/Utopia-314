@@ -1,13 +1,14 @@
 <template>
   <div class="flex flex-col items-center">
-    <h1>Welcome, {{ username }}</h1> <!-- Display the username here -->
+    <h1>Welcome, {{ username }}</h1>
+    <!-- Display the username here -->
     <input
-    type="text"
-    v-model="searchQuery"
-    class="input"
-    placeholder="Search listings"
-  />
-  <button class="btn" @click="searchListings">Search</button>
+      type="text"
+      v-model="searchQuery"
+      class="input"
+      placeholder="Search listings"
+    />
+    <button class="btn" @click="searchListings">Search</button>
 
     <div class="flex gap-4 mb-4">
       <button class="btn" @click="createListing">Create Listing</button>
@@ -46,27 +47,29 @@
 </template>
 
 <script setup>
+getListing();
 
-const username = computed(() => sessionStorage.getItem('username'));
-
+const username = computed(() => sessionStorage.getItem("username"));
 const listings = ref(null);
 const deleteId = ref(null);
 const updateId = ref(null);
 const newName = ref(null);
 
-const searchQuery = ref('');
+const searchQuery = ref("");
 
 async function searchListings() {
   // Ensure to use the correct API endpoint and include the search query parameter
-  if (searchQuery.value.trim() !== '') {
-    const response = await $fetch(`/api/controller/listing/search?q=${encodeURIComponent(searchQuery.value)}`);
-    listings.value = response.value;  // Update the listings with the search results
+  if (searchQuery.value.trim() !== "") {
+    const response = await $fetch(
+      `/api/controller/listing/search?q=${encodeURIComponent(
+        searchQuery.value
+      )}`
+    );
+    listings.value = response.value; // Update the listings with the search results
   } else {
-    getListing();  // If the search query is empty, fetch all listings again
+    getListing(); // If the search query is empty, fetch all listings again
   }
 }
-
-
 
 async function createListing() {
   const response = await $fetch("/api/controller/listing", {
@@ -140,7 +143,7 @@ function getMongoIdById(id) {
   box-sizing: border-box;
 }
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f8f9fa;
@@ -220,4 +223,3 @@ h1 {
   font-size: 24px;
 }
 </style>
-
