@@ -29,6 +29,10 @@ export const listingSchema = defineMongooseModel({
       type: [String],
       required: false,
     },
+    userId: {
+      type: Number,
+      required: true,
+    },
   },
   hooks(schema) {
     // Add a hook so that the id field is auto-incremented
@@ -46,4 +50,3 @@ export const listingSchema = defineMongooseModel({
     });
   },
 });
-

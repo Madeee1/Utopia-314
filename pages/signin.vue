@@ -47,11 +47,12 @@ export default {
       });
 
       if (signIn.ok) {
-        const { username, role, email } = signIn;
+        const { username, role, email, id } = signIn;
 
         sessionStorage.setItem("username", username);
         sessionStorage.setItem("role", role);
         sessionStorage.setItem("email", email);
+        sessionStorage.setItem("userId", id);
 
         this.$router.push("/dashboard");
       }

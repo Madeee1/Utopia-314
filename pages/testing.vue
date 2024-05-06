@@ -80,6 +80,7 @@ async function createListing() {
       location: "123123",
       description: "This is a new listing.",
       price: 100,
+      userId: sessionStorage.getItem("userId"),
     }),
   });
 
@@ -87,7 +88,8 @@ async function createListing() {
 }
 
 async function getListing() {
-  const response = await $fetch("/api/controller/listing");
+  const userId = sessionStorage.getItem("userId");
+  const response = await $fetch("/api/controller/listing?userId=" + userId);
   listings.value = response.value;
 }
 
