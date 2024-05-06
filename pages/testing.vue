@@ -13,6 +13,7 @@
     <div class="flex gap-4 mb-4">
       <button class="btn" @click="createListing">Create Listing</button>
       <button class="btn" @click="getListing">Get Listing</button>
+      <!--
       <button class="btn" @click="updateListing">Update Listing</button>
       <input
         type="text"
@@ -26,7 +27,7 @@
         class="input"
         placeholder="name to update to"
       />
-      <button class="btn" @click="deleteListing">Delete Listing</button>
+      <button class="btn" @click="deleteListing">Delete Listing</button>-->
     </div>
     <div v-if="listings" class="grid grid-cols-3 gap-4">
       <div class="card" v-for="listing in listings" :key="listing.id">
@@ -35,7 +36,9 @@
         <p class="card-text">{{ listing.description }}</p>
         <p class="card-text">${{ listing.price }}</p>
         <p class="card-text">ID: {{ listing.id }}</p>
-        <button @click="deleteListing(listing.id)">Delete Listing</button>
+        <button class="btn" @click="showUpdatePrompt(listing.id)">Update Listing</button>
+        <br><br>
+        <button class="btn" @click="deleteListing(listing.id)">Delete Listing</button>
       </div>
     </div>
   </div>
@@ -93,18 +96,25 @@ async function getListing() {
   listings.value = response.value;
 }
 
-async function updateListing() {
-  const response = await $fetch("/api/controller/listing", {
+function showUpdatePrompt(listingId) {
+  const newName = prompt("Please enter the new name for the listing:");
+  if (newName !== null && newName.trim() !== "") {
+    updateListing(listingId, newName);
+  }
+}
+
+async function updateListing(listingId, newName) {
+  const response = await $fetch(`/api/controller/listing`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      _id: getMongoIdById(updateId.value),
-      name: newName.value,
+      name: newName,
       location: "123123",
       description: "This is an updated listing.",
       price: 200,
+      _id: getMongoIdById(listingId)
     }),
   });
 
