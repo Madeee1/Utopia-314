@@ -59,7 +59,7 @@ const searchQuery = ref('');
 async function searchListings() {
   // Ensure to use the correct API endpoint and include the search query parameter
   if (searchQuery.value.trim() !== '') {
-    const response = await $fetch(`/api/controller/search?q=${encodeURIComponent(searchQuery.value)}`);
+    const response = await $fetch(`/api/controller/listing/search?q=${encodeURIComponent(searchQuery.value)}`);
     listings.value = response.value;  // Update the listings with the search results
   } else {
     getListing();  // If the search query is empty, fetch all listings again
