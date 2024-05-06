@@ -27,12 +27,6 @@
         placeholder="name to update to"
       />
       <button class="btn" @click="deleteListing">Delete Listing</button>
-      <input
-        type="text"
-        v-model="deleteId"
-        class="input"
-        placeholder="id of listing to delete"
-      />
     </div>
     <div v-if="listings" class="grid grid-cols-3 gap-4">
       <div class="card" v-for="listing in listings" :key="listing.id">
@@ -41,17 +35,21 @@
         <p class="card-text">{{ listing.description }}</p>
         <p class="card-text">${{ listing.price }}</p>
         <p class="card-text">ID: {{ listing.id }}</p>
+        <button @click="deleteListing(listing.id)">Delete Listing</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-getListing();
+import { onMounted } from "vue";
+
+onMounted(() => {
+  getListing();
+});
 
 const username = computed(() => sessionStorage.getItem("username"));
 const listings = ref(null);
-const deleteId = ref(null);
 const updateId = ref(null);
 const newName = ref(null);
 
@@ -111,14 +109,14 @@ async function updateListing() {
   getListing();
 }
 
-async function deleteListing() {
+async function deleteListing(deleteId) {
   const response = await $fetch("/api/controller/listing", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      _id: getMongoIdById(deleteId.value),
+      _id: getMongoIdById(deleteId),
     }),
   });
 
