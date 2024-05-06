@@ -27,6 +27,13 @@ export const userSchema = defineMongooseModel({
       required: false,
       unique: true,
     },
+    // @ts-ignore
+    uuid: {
+      type: Types.ObjectId,
+      required: true,
+      unique: true,
+      default: () => new Types.ObjectId(),
+    },
   },
   hooks(schema) {
     // Add a pre-save hook to hash the password
