@@ -9,25 +9,19 @@
       placeholder="Search listings"
     />
     <button class="btn" @click="searchListings">Search</button>
-
     <div class="flex gap-4 mb-4">
-      <button class="btn" @click="createListing">Create Listing</button>
+      <button class="btn" @click="showCreateDialog">Create Listing</button>
       <button class="btn" @click="getListing">Get Listing</button>
-      <!--
-      <button class="btn" @click="updateListing">Update Listing</button>
-      <input
-        type="text"
-        v-model="updateId"
-        class="input"
-        placeholder="id of listing to update"
-      />
-      <input
-        type="text"
-        v-model="newName"
-        class="input"
-        placeholder="name to update to"
-      />
-      <button class="btn" @click="deleteListing">Delete Listing</button>-->
+    </div>
+    <div v-if="showDialog">
+      <div class="modal">
+        <input type="text" v-model="newListing.name" placeholder="Name">
+        <input type="text" v-model="newListing.location" placeholder="Location">
+        <textarea v-model="newListing.description" placeholder="Description"></textarea>
+        <input type="number" v-model="newListing.price" placeholder="Price">
+        <button @click="submitNewListing">Create</button>
+        <button @click="closeDialog">Cancel</button>
+      </div>
     </div>
     <div v-if="listings" class="grid grid-cols-3 gap-4">
       <div class="card" v-for="listing in listings" :key="listing.id">
@@ -37,7 +31,6 @@
         <p class="card-text">${{ listing.price }}</p>
         <p class="card-text">ID: {{ listing.id }}</p>
         <button class="btn" @click="showUpdatePrompt(listing.id)">Update Listing</button>
-        <br><br>
         <button class="btn" @click="deleteListing(listing.id)">Delete Listing</button>
       </div>
     </div>
@@ -51,12 +44,41 @@ onMounted(() => {
   getListing();
 });
 
-const username = computed(() => sessionStorage.getItem("username"));
+const showDialog = ref(false);
+const newListing = ref({
+  name: "",
+  location: "",
+  description: "",
+  price: 0
+});
 const listings = ref(null);
+const username = computed(() => sessionStorage.getItem("username"));
 const updateId = ref(null);
 const newName = ref(null);
-
 const searchQuery = ref("");
+
+
+
+function showCreateDialog() {
+  showDialog.value = true;
+}
+
+function closeDialog() {
+  showDialog.value = false;
+}
+
+async function submitNewListing() {
+  const response = await $fetch("/api/controller/listing", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...newListing.value,
+      userId: sessionStorage.getItem("userId"),
+    }),
+  });
+  closeDialog();
+  getListing();  // Refresh the listings after creating a new one
+}
 
 async function searchListings() {
   // Ensure to use the correct API endpoint and include the search query parameter
@@ -151,11 +173,11 @@ function getMongoIdById(id) {
 /* Base styles */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 body {
   font-family: "Arial", sans-serif;
-  margin: 0;
-  padding: 0;
   background-color: #f8f9fa;
 }
 
@@ -163,24 +185,28 @@ body {
 .btn {
   padding: 12px 24px;
   background-color: #007bff;
-  color: #ffffff;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 .btn:hover {
   background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Input field styling */
-.input {
+/* Input and textarea styling */
+.input, textarea {
   padding: 12px;
-  border: 2px solid #ced4da;
+  border: 1px solid #ced4da;
   border-radius: 5px;
   font-size: 16px;
-  width: 250px; /* Consistent width */
+  width: 100%; /* Make input fields responsive */
+}
+textarea {
+  min-height: 120px; /* Set minimum height for textarea */
 }
 
 /* Card styling */
@@ -189,47 +215,79 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Text styling inside cards */
+/* Card content styling */
 .card-title {
   font-size: 20px;
-  color: #333333;
+  color: #333;
   margin-bottom: 10px;
 }
 .card-text {
-  color: #555555;
+  color: #555;
   line-height: 1.6;
   margin-bottom: 6px;
 }
 
-/* Flexbox setup for alignment */
+/* Flexbox and grid setup */
 .flex {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  align-items: center; /* Align items vertically in the center */
+  justify-content: center; /* Center the items horizontally */
+  gap: 10px; /* Space between the items */
 }
+
 .flex-col {
   flex-direction: column;
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Adjust the minmax values as needed */
   gap: 20px;
+  width: 80%; /* Ensure the grid container takes full width */
 }
-.mb-4 {
-  margin-bottom: 16px;
+
+
+/* Modal styling */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  width: 90%; /* Responsive width */
+  max-width: 500px;
+  z-index: 1001;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 /* Header styling */
 h1 {
   color: #343a40;
   font-size: 24px;
+  margin-bottom: 20px;
 }
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+
 </style>
