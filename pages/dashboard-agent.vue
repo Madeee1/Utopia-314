@@ -1,6 +1,11 @@
 <template>
   <div class="flex flex-col items-center">
-    <h1>Welcome, {{ username }}</h1>
+    <div class="relative flex items-center w-full">
+      <h1 class="mt-4">Welcome, {{ username }}</h1>
+      <button class="btn absolute top-4 right-4" @click="moveToProfile">
+        Update Profile
+      </button>
+    </div>
     <!-- Display the username here -->
     <input
       type="text"
@@ -96,7 +101,7 @@ async function searchListings() {
     const response = await $fetch(
       `/api/controller/listing/search?q=${encodeURIComponent(
         searchQuery.value
-      )}`
+      )}&userId=` + sessionStorage.getItem("userId")
     );
     listings.value = response.value; // Update the listings with the search results
   } else {
@@ -161,6 +166,10 @@ function getMongoIdById(id) {
     }
   }
   return null;
+}
+
+function moveToProfile() {
+  navigateTo("/profile");
 }
 </script>
 

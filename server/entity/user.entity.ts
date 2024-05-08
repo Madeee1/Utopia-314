@@ -12,6 +12,7 @@ export async function comparePassword(
   return bcrypt.compare(password, hashPassword);
 }
 
+// TODO: CHANGE class name to "User"
 export class userEntity {
   constructor() {}
   // SIGN IN user is here
@@ -62,7 +63,7 @@ export class userEntity {
         hashPassword: body.password,
         role: body.role,
       });
-      return "User created successfully!";
+      return { ok: true };
     } catch (error: any) {
       throw createError({
         statusCode: 400,
@@ -70,20 +71,58 @@ export class userEntity {
       });
     }
   }
-}
 
-/*
-// pages/api/signup.js
-export default function (req: Request, res: Response) {
-        if (req.method === 'POST') {
-            // Handle sign up logic based on the role
-            const { username, email, password, role } = req.body;
-            // Perform validation, create user, etc.
-            // For brevity, assuming user creation is successful
-            const newUser = { username, email, role };
-            res.status(201).json({ user: newUser });
-        } else {
-            res.status(405).end(); // Method Not Allowed
-        }
+  // Update AGENT profile is here
+  async updateAgent(event: any, body: any) {
+    const { _id, email } = body;
+
+    // Update the user in the database
+    // Return the updated user
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { _id },
+        { email },
+        { new: true }
+      );
+      return { ok: true, response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
     }
-*/
+  }
+
+  // update BUYER profile is here
+  async updateBuyer(event: any, body: any) {
+    const { _id, email } = body;
+
+    // Update the user in the database
+    // Return the updated user
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { _id },
+        { email },
+        { new: true }
+      );
+      return { ok: true, response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+
+  // update SELLER profile is here
+  async updateSeller(event: any, body: any) {
+    const { _id, email } = body;
+
+    // Update the user in the database
+    // Return the updated user
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { _id },
+        { email },
+        { new: true }
+      );
+      return { ok: true, response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+}

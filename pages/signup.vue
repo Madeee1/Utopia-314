@@ -70,7 +70,7 @@ export default {
         },
         body: JSON.stringify(this.formData),
       });
-      if (signUp === "User created successfully!") {
+      if (signUp.ok) {
         this.$router.push("/signin");
       } else {
         alert("Signup failed. Please try again.");
