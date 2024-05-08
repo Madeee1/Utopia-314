@@ -47,6 +47,7 @@ export class userEntity {
         username: user.username,
         role: user.role,
         email: user.email,
+        id: user.id,
       };
     }
   }

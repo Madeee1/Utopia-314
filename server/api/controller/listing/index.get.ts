@@ -4,14 +4,15 @@ import { Listing as listingEntity } from "~/server/entity/listing.entity";
 export default defineEventHandler(async (event) => {
   const controller = new getListingController();
 
-  return await controller.getListing();
+  const userIdQuery = getQuery(event).userId;
+  return await controller.getListing(userIdQuery);
 });
 
 class getListingController {
   constructor() {}
 
-  async getListing() {
+  async getListing(userIdQuery: any) {
     const listingRepo = new listingEntity();
-    return await listingRepo.getListing();
+    return await listingRepo.getListing(userIdQuery);
   }
 }

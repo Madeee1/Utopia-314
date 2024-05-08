@@ -2,10 +2,12 @@ export class Listing {
   // This is the entity for the listing table
   constructor() {}
 
-  async getListing() {
+  async getListing(userIdQuery: any) {
     // This is the function that gets all the listings in the database
     try {
-      const listings = await listingSchema.find();
+      const listings = await listingSchema.find({
+        userId: parseInt(userIdQuery),
+      });
       return { value: listings, ok: true };
     } catch (error: any) {
       return { value: false, ok: false, error: error.message };
@@ -20,6 +22,7 @@ export class Listing {
         location: body.location,
         price: body.price,
         description: body.description,
+        userId: body.userId,
       });
       await listing.save();
       return { value: listing, ok: true };
@@ -50,6 +53,21 @@ export class Listing {
     try {
       const listing = await listingSchema.findByIdAndDelete(body._id).exec();
       return { value: listing, ok: true };
+    } catch (error: any) {
+      return { value: false, ok: false, error: error.message };
+    }
+  }
+
+  async searchListings(query: string) {
+    try {
+      const listings = await listingSchema.find({
+        $or: [
+          { name: { $regex: query, $options: "i" } },
+          { description: { $regex: query, $options: "i" } },
+          { location: { $regex: query, $options: "i" } },
+        ],
+      });
+      return { value: listings, ok: true };
     } catch (error: any) {
       return { value: false, ok: false, error: error.message };
     }
