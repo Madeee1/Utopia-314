@@ -96,7 +96,7 @@ async function searchListings() {
     const response = await $fetch(
       `/api/controller/listing/search?q=${encodeURIComponent(
         searchQuery.value
-      )}`
+      )}&userId=` + sessionStorage.getItem("userId")
     );
     listings.value = response.value; // Update the listings with the search results
   } else {
