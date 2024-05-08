@@ -15,10 +15,17 @@
     </div>
     <div v-if="showDialog">
       <div class="modal">
-        <input type="text" v-model="newListing.name" placeholder="Name">
-        <input type="text" v-model="newListing.location" placeholder="Location">
-        <textarea v-model="newListing.description" placeholder="Description"></textarea>
-        <input type="number" v-model="newListing.price" placeholder="Price">
+        <input type="text" v-model="newListing.name" placeholder="Name" />
+        <input
+          type="text"
+          v-model="newListing.location"
+          placeholder="Location"
+        />
+        <textarea
+          v-model="newListing.description"
+          placeholder="Description"
+        ></textarea>
+        <input type="number" v-model="newListing.price" placeholder="Price" />
         <button @click="submitNewListing">Create</button>
         <button @click="closeDialog">Cancel</button>
       </div>
@@ -30,8 +37,12 @@
         <p class="card-text">{{ listing.description }}</p>
         <p class="card-text">${{ listing.price }}</p>
         <p class="card-text">ID: {{ listing.id }}</p>
-        <button class="btn" @click="showUpdatePrompt(listing.id)">Update Listing</button>
-        <button class="btn" @click="deleteListing(listing.id)">Delete Listing</button>
+        <button class="btn" @click="showUpdatePrompt(listing.id)">
+          Update Listing
+        </button>
+        <button class="btn" @click="deleteListing(listing.id)">
+          Delete Listing
+        </button>
       </div>
     </div>
   </div>
@@ -40,6 +51,7 @@
 <script setup>
 import { onMounted } from "vue";
 
+// Get all the listings for this agent automatically when the component is mounted
 onMounted(() => {
   getListing();
 });
@@ -49,15 +61,11 @@ const newListing = ref({
   name: "",
   location: "",
   description: "",
-  price: 0
+  price: 0,
 });
 const listings = ref(null);
 const username = computed(() => sessionStorage.getItem("username"));
-const updateId = ref(null);
-const newName = ref(null);
 const searchQuery = ref("");
-
-
 
 function showCreateDialog() {
   showDialog.value = true;
@@ -67,6 +75,7 @@ function closeDialog() {
   showDialog.value = false;
 }
 
+// Create a new listing here
 async function submitNewListing() {
   const response = await $fetch("/api/controller/listing", {
     method: "POST",
@@ -77,9 +86,10 @@ async function submitNewListing() {
     }),
   });
   closeDialog();
-  getListing();  // Refresh the listings after creating a new one
+  getListing(); // Refresh the listings after creating a new one
 }
 
+// Search for the listings here
 async function searchListings() {
   // Ensure to use the correct API endpoint and include the search query parameter
   if (searchQuery.value.trim() !== "") {
@@ -94,24 +104,7 @@ async function searchListings() {
   }
 }
 
-async function createListing() {
-  const response = await $fetch("/api/controller/listing", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: "New Listing",
-      location: "123123",
-      description: "This is a new listing.",
-      price: 100,
-      userId: sessionStorage.getItem("userId"),
-    }),
-  });
-
-  getListing();
-}
-
+// Get all the listings for this agent
 async function getListing() {
   const userId = sessionStorage.getItem("userId");
   const response = await $fetch("/api/controller/listing?userId=" + userId);
@@ -125,6 +118,7 @@ function showUpdatePrompt(listingId) {
   }
 }
 
+// Update the listing with the new name
 async function updateListing(listingId, newName) {
   const response = await $fetch(`/api/controller/listing`, {
     method: "PUT",
@@ -136,13 +130,14 @@ async function updateListing(listingId, newName) {
       location: "123123",
       description: "This is an updated listing.",
       price: 200,
-      _id: getMongoIdById(listingId)
+      _id: getMongoIdById(listingId),
     }),
   });
 
   getListing();
 }
 
+// Delete the listing with the given ID
 async function deleteListing(deleteId) {
   const response = await $fetch("/api/controller/listing", {
     method: "DELETE",
@@ -198,7 +193,8 @@ body {
 }
 
 /* Input and textarea styling */
-.input, textarea {
+.input,
+textarea {
   padding: 12px;
   border: 1px solid #ced4da;
   border-radius: 5px;
@@ -247,11 +243,13 @@ textarea {
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Adjust the minmax values as needed */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(320px, 1fr)
+  ); /* Adjust the minmax values as needed */
   gap: 20px;
   width: 80%; /* Ensure the grid container takes full width */
 }
-
 
 /* Modal styling */
 .modal {
@@ -288,6 +286,4 @@ h1 {
 .mb-4 {
   margin-bottom: 16px;
 }
-
-
 </style>

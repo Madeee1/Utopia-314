@@ -54,7 +54,8 @@ export default {
         sessionStorage.setItem("email", email);
         sessionStorage.setItem("userId", id);
 
-        this.$router.push("/dashboard");
+        if (role === "agent") this.$router.push("/dashboard-agent");
+        else this.$router.push("/dashboard");
       }
     },
   },
