@@ -58,13 +58,18 @@ export class Listing {
     }
   }
 
-  async searchListings(query: string) {
+  async searchListings(query: string, userIdQuery: any) {
     try {
       const listings = await listingSchema.find({
-        $or: [
-          { name: { $regex: query, $options: "i" } },
-          { description: { $regex: query, $options: "i" } },
-          { location: { $regex: query, $options: "i" } },
+        $and: [
+          { userId: parseInt(userIdQuery) },
+          {
+            $or: [
+              { name: { $regex: query, $options: "i" } },
+              { description: { $regex: query, $options: "i" } },
+              { location: { $regex: query, $options: "i" } },
+            ],
+          },
         ],
       });
       return { value: listings, ok: true };
