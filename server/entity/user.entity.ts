@@ -12,6 +12,7 @@ export async function comparePassword(
   return bcrypt.compare(password, hashPassword);
 }
 
+// TODO: CHANGE class name to "User"
 export class userEntity {
   constructor() {}
   // SIGN IN user is here
@@ -46,6 +47,7 @@ export class userEntity {
         username: user.username,
         role: user.role,
         email: user.email,
+        id: user.id,
       };
     }
   }
@@ -61,7 +63,7 @@ export class userEntity {
         hashPassword: body.password,
         role: body.role,
       });
-      return "User created successfully!";
+      return { ok: true };
     } catch (error: any) {
       throw createError({
         statusCode: 400,
