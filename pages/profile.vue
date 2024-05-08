@@ -50,6 +50,8 @@ async function getProfileInfo() {
   );
   if (response.ok) {
     profileInfo.value = response.value;
+  } else {
+    navigateTo("/");
   }
 }
 
@@ -62,9 +64,9 @@ async function updateUser() {
   if (userRole.value === "agent") {
     await updateAgent();
   } else if (userRole.value === "buyer") {
-    // await updateBuyer();
+    await updateBuyer();
   } else if (userRole.value === "seller") {
-    // await updateSeller();
+    await updateSeller();
   } else {
     alert("Invalid user role.");
     navigateTo("/");
@@ -86,6 +88,41 @@ async function updateUser() {
 }
 
 async function updateAgent() {
-  //const response = await $fetch("/a")
+  const response = await $fetch("/api/controller/user/agent", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _id: profileInfo.value._id,
+      email: newEmail.value,
+    }),
+  });
+}
+
+async function updateBuyer() {
+  const response = await $fetch("/api/controller/user/buyer", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _id: profileInfo.value._id,
+      email: newEmail.value,
+    }),
+  });
+}
+
+async function updateSeller() {
+  const response = await $fetch("/api/controller/user/seller", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _id: profileInfo.value._id,
+      email: newEmail.value,
+    }),
+  });
 }
 </script>
