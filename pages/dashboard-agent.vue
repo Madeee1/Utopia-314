@@ -18,21 +18,36 @@
       <button class="btn" @click="showCreateDialog">Create Listing</button>
       <button class="btn" @click="getListing">Get Listing</button>
     </div>
-    <div v-if="showDialog">
+    <div v-if="showDialog" class="overlay">
       <div class="modal">
-        <input type="text" v-model="newListing.name" placeholder="Name" />
+        <input
+          type="text"
+          v-model="newListing.name"
+          placeholder="Name"
+          class="input mb-4"
+        />
         <input
           type="text"
           v-model="newListing.location"
           placeholder="Location"
+          class="input mb-4"
         />
         <textarea
           v-model="newListing.description"
           placeholder="Description"
+          class="input mb-1"
         ></textarea>
-        <input type="number" v-model="newListing.price" placeholder="Price" />
-        <button @click="submitNewListing">Create</button>
-        <button @click="closeDialog">Cancel</button>
+        <label for="price" class="mb-2">Price</label>
+        <input
+          type="number"
+          v-model="newListing.price"
+          placeholder="Price"
+          class="input mb-4"
+        />
+        <div class="flex gap-4">
+          <button @click="submitNewListing" class="btn">Create</button>
+          <button @click="closeDialog" class="btn">Cancel</button>
+        </div>
       </div>
     </div>
     <div v-if="listings" class="grid grid-cols-3 gap-4">
