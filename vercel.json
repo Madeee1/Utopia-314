@@ -1,0 +1,10 @@
+{
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "staging": true,
+      "Majeeds": false,
+      "Jc": false
+    }
+  }
+}
