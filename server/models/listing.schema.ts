@@ -37,8 +37,16 @@ export const listingSchema = defineMongooseModel({
       type: "Number",
       default: 0,
     },
+    shortlistNumber: {
+      type: "Number",
+      default: 0,
+    },
     sellerId: {
       type: Number,
+      required: true,
+    },
+    agentUsername: {
+      type: String,
       required: true,
     },
   },

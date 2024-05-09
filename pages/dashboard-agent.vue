@@ -2,6 +2,12 @@
   <div class="flex flex-col items-center">
     <div class="relative flex items-center w-full">
       <h1 class="mt-4">Welcome, {{ username }}</h1>
+      <button
+        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded absolute top-4 left-4"
+        @click="logout"
+      >
+        Log Out
+      </button>
       <button class="btn absolute top-4 right-4" @click="moveToProfile">
         Update Profile
       </button>
@@ -111,6 +117,7 @@ async function submitNewListing() {
     body: JSON.stringify({
       ...newListing.value,
       userId: sessionStorage.getItem("userId"),
+      agentUsername: sessionStorage.getItem("username"),
     }),
   });
   closeDialog();
@@ -195,6 +202,11 @@ function getMongoIdById(id) {
 
 function moveToProfile() {
   navigateTo("/profile");
+}
+
+function logout() {
+  sessionStorage.clear();
+  navigateTo("/signin");
 }
 </script>
 

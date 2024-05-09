@@ -1,24 +1,34 @@
 <template>
   <div class="flex flex-col items-center">
-    <h1 class="mt-4">Welcome, {{ username }}</h1>
-    <button class="btn logout-button absolute top-4 left-4" @click="logout">
-      Log Out
-    </button>
-    <button class="btn absolute top-4 right-4" @click="moveToProfile">
-      Update Profile
-    </button>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="relative w-full flex flex-col items-center h-24">
+      <h1 class="mt-4 text-2xl font-bold">Welcome, {{ username }}</h1>
+      <h2 class="text-xl">Your ID is {{ userId }}</h2>
+      <button
+        class="logout-button absolute top-4 left-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+        @click="logout"
+      >
+        Log Out
+      </button>
+      <button
+        class="btn absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        @click="moveToProfile"
+      >
+        Update Profile
+      </button>
+    </div>
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+    >
       <div class="card" v-for="listing in listings" :key="listing.id">
-        <h1 class="card-title">{{ listing.name }}</h1>
+        <h1 class="card-title text-xl font-bold">{{ listing.name }}</h1>
         <p class="card-text">{{ listing.location }}</p>
         <p class="card-text">{{ listing.description }}</p>
         <p class="card-text">${{ listing.price.toLocaleString() }}</p>
         <b
-          ><p class="card-text">Agent Name : {{ listing.agentUsername }}</p></b
+          ><p class="card-text">Agent Name: {{ listing.agentUsername }}</p></b
         >
         <p class="card-text">Views: {{ listing.views }}</p>
-        <p class="card-text">Shortlisted: {{ listing.shortlistedCount }}</p>
-        <!-- Displaying shortlisted count -->
+        <p class="card-text">Shortlist Count: {{ listing.shortlistNumber }}</p>
         <button class="btn" @click="showReviewModal(listing.id)">
           Rate and Review my agent
         </button>
@@ -26,7 +36,7 @@
     </div>
     <div v-if="reviewModalVisible" class="overlay">
       <div class="modal">
-        <h2>Rate and Review</h2>
+        <h2 class="text-xl font-bold">Rate and Review</h2>
         <label for="rating">Rating (1-5):</label>
         <input
           type="number"
@@ -51,8 +61,9 @@
 import { onMounted, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-//const listings = ref([]);
+const listings = ref([]);
 const username = computed(() => sessionStorage.getItem("username"));
+const userId = computed(() => sessionStorage.getItem("userId"));
 const searchQuery = ref("");
 const router = useRouter();
 const route = useRoute();
@@ -63,73 +74,21 @@ onMounted(async () => {
 
 async function fetchListings() {
   const response = await $fetch(
-    `/api/listings?sellerId=${sessionStorage.getItem("userId")}`
+    `/api/controller/listing/seller?sellerId=${sessionStorage.getItem(
+      "userId"
+    )}`
   );
-  listings.value = response;
-}
-
-async function searchListings() {
-  if (searchQuery.value.trim()) {
-    const response = await $fetch(
-      `/api/listings/search?query=${encodeURIComponent(
-        searchQuery.value
-      )}&sellerId=${sessionStorage.getItem("userId")}`
-    );
-    listings.value = response;
-  } else {
-    await fetchListings();
-  }
+  listings.value = response.value;
 }
 
 function moveToProfile() {
   router.push("/profile");
 }
 
-function showUpdatePrompt(listingId) {
-  // Handle update logic
-}
-
-async function deleteListing(listingId) {
-  // Handle delete logic
-}
 function logout() {
   sessionStorage.clear(); // This logs the user out by clearing the session
   navigateTo("/signin"); // Redirect to the login page
 }
-
-const listings = ref([
-  {
-    id: 1,
-    name: "Charming Bungalow",
-    location: "123 Maple Street, Springfield",
-    description: "A cozy three-bedroom bungalow with a lovely garden.",
-    agentUsername: "Matthew",
-    price: 350000,
-    views: 150,
-    shortlistedCount: 10, // New shortlisted count
-  },
-  {
-    id: 2,
-    name: "Modern Apartment",
-    location: "456 Oak Avenue, Lakeside",
-    description: "Luxury apartment with lake views and modern amenities.",
-    agentUsername: "JC",
-    price: 250000,
-    views: 275,
-    shortlistedCount: 25,
-  },
-  {
-    id: 3,
-    name: "Spacious Condo",
-    location: "789 Pine Road, Central City",
-    description:
-      "A spacious and centrally located condo, perfect for families.",
-    agentUsername: "Majeed",
-    price: 450000,
-    views: 325,
-    shortlistedCount: 15,
-  },
-]);
 
 const reviewModalVisible = ref(false);
 const reviewRating = ref(0);
