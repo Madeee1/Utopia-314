@@ -44,6 +44,13 @@
           placeholder="Price"
           class="input mb-4"
         />
+        <label for="seller id" class="mb-2">Seller Id</label>
+        <input
+          type="text"
+          v-model="newListing.sellerId"
+          placeholder="Seller Id"
+          class="input mb-4"
+        />
         <div class="flex gap-4">
           <button @click="submitNewListing" class="btn">Create</button>
           <button @click="closeDialog" class="btn">Cancel</button>
@@ -82,6 +89,7 @@ const newListing = ref({
   location: "",
   description: "",
   price: 0,
+  sellerId: "",
 });
 const listings = ref(null);
 const username = computed(() => sessionStorage.getItem("username"));
@@ -97,7 +105,7 @@ function closeDialog() {
 
 // Create a new listing here
 async function submitNewListing() {
-  const response = await $fetch("/api/controller/listing", {
+  const response = await $fetch("/api/controller/listing/agent", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -114,7 +122,7 @@ async function searchListings() {
   // Ensure to use the correct API endpoint and include the search query parameter
   if (searchQuery.value.trim() !== "") {
     const response = await $fetch(
-      `/api/controller/listing/search?q=${encodeURIComponent(
+      `/api/controller/listing/agent/search?q=${encodeURIComponent(
         searchQuery.value
       )}&userId=` + sessionStorage.getItem("userId")
     );
@@ -127,7 +135,9 @@ async function searchListings() {
 // Get all the listings for this agent
 async function getListing() {
   const userId = sessionStorage.getItem("userId");
-  const response = await $fetch("/api/controller/listing?userId=" + userId);
+  const response = await $fetch(
+    "/api/controller/listing/agent?userId=" + userId
+  );
   listings.value = response.value;
 }
 
@@ -140,7 +150,7 @@ function showUpdatePrompt(listingId) {
 
 // Update the listing with the new name
 async function updateListing(listingId, newName) {
-  const response = await $fetch(`/api/controller/listing`, {
+  const response = await $fetch(`/api/controller/listing/agent`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -159,7 +169,7 @@ async function updateListing(listingId, newName) {
 
 // Delete the listing with the given ID
 async function deleteListing(deleteId) {
-  const response = await $fetch("/api/controller/listing", {
+  const response = await $fetch("/api/controller/listing/agent", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

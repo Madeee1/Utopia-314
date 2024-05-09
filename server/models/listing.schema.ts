@@ -33,6 +33,14 @@ export const listingSchema = defineMongooseModel({
       type: Number,
       required: true,
     },
+    views: {
+      type: "Number",
+      default: 0,
+    },
+    sellerId: {
+      type: Number,
+      required: true,
+    },
   },
   hooks(schema) {
     // Add a hook so that the id field is auto-incremented

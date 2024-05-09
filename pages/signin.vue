@@ -55,7 +55,10 @@ export default {
         sessionStorage.setItem("userId", id);
 
         if (role === "agent") this.$router.push("/dashboard-agent");
-        else this.$router.push("/dashboard");
+        else if (role === "buyer") this.$router.push("/dashboard-buyer");
+        else if (role === "seller") this.$router.push("/dashboard-seller");
+        else if (role === "admin") this.$router.push("/dashboard-admin");
+        else this.$router.push("/signin");
       }
     },
   },

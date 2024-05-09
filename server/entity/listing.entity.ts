@@ -23,6 +23,7 @@ export class Listing {
         price: body.price,
         description: body.description,
         userId: body.userId,
+        sellerId: body.sellerId,
       });
       await listing.save();
       return { value: listing, ok: true };
