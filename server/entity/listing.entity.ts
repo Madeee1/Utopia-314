@@ -2,7 +2,7 @@ export class Listing {
   // This is the entity for the listing table
   constructor() {}
 
-  async getListing(userIdQuery: any) {
+  async getAgentListing(userIdQuery: any) {
     // This is the function that gets all the listings in the database
     try {
       const listings = await listingSchema.find({
@@ -23,6 +23,8 @@ export class Listing {
         price: body.price,
         description: body.description,
         userId: body.userId,
+        sellerId: body.sellerId,
+        agentUsername: body.agentUsername,
       });
       await listing.save();
       return { value: listing, ok: true };
@@ -71,6 +73,17 @@ export class Listing {
             ],
           },
         ],
+      });
+      return { value: listings, ok: true };
+    } catch (error: any) {
+      return { value: false, ok: false, error: error.message };
+    }
+  }
+
+  async getSellerListings(sellerIdQuery: any) {
+    try {
+      const listings = await listingSchema.find({
+        sellerId: parseInt(sellerIdQuery),
       });
       return { value: listings, ok: true };
     } catch (error: any) {
