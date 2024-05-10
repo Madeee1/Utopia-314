@@ -19,7 +19,11 @@
     <div
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
     >
-      <div class="card" v-for="listing in listings" :key="listing.id">
+      <div
+        class="card bg-white border-2 border-gray-300 rounded-md shadow-md p-4"
+        v-for="listing in listings"
+        :key="listing.id"
+      >
         <h1 class="card-title text-xl font-bold">{{ listing.name }}</h1>
         <p class="card-text">{{ listing.location }}</p>
         <p class="card-text">{{ listing.description }}</p>
@@ -29,13 +33,16 @@
         >
         <p class="card-text">Views: {{ listing.views }}</p>
         <p class="card-text">Shortlist Count: {{ listing.shortlistNumber }}</p>
-        <button class="btn" @click="showReviewModal(listing.id)">
+        <button class="btn" @click="showReviewModal(listing.userId)">
           Rate and Review my agent
         </button>
       </div>
     </div>
-    <div v-if="reviewModalVisible" class="overlay">
-      <div class="modal">
+    <div
+      v-if="reviewModalVisible"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <div class="bg-white rounded-md shadow-md p-4">
         <h2 class="text-xl font-bold">Rate and Review</h2>
         <label for="rating">Rating (1-5):</label>
         <input
@@ -43,15 +50,28 @@
           v-model="reviewRating"
           min="1"
           max="5"
-          class="input mb-4"
+          class="input mb-4 border-blue-900"
         />
         <textarea
           v-model="reviewText"
           placeholder="Write a review..."
-          class="input mb-4"
+          class="input mb-4 border border-blue-900"
         ></textarea>
-        <button class="btn" @click="submitReview">Submit Review</button>
-        <button class="btn" @click="closeReviewModal">Cancel</button>
+        <button
+          class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mr-4"
+          @click="
+            submitReview();
+            submitRating();
+          "
+        >
+          Submit Review
+        </button>
+        <button
+          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+          @click="closeReviewModal"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </div>
@@ -64,9 +84,7 @@ import { useRoute, useRouter } from "vue-router";
 const listings = ref([]);
 const username = computed(() => sessionStorage.getItem("username"));
 const userId = computed(() => sessionStorage.getItem("userId"));
-const searchQuery = ref("");
 const router = useRouter();
-const route = useRoute();
 
 onMounted(async () => {
   await fetchListings();
@@ -93,10 +111,10 @@ function logout() {
 const reviewModalVisible = ref(false);
 const reviewRating = ref(0);
 const reviewText = ref("");
-const selectedListingId = ref(null);
+const selectedListingAgentId = ref(null);
 
-function showReviewModal(listingId) {
-  selectedListingId.value = listingId;
+function showReviewModal(agentId) {
+  selectedListingAgentId.value = agentId;
   reviewModalVisible.value = true;
 }
 
@@ -107,14 +125,28 @@ function closeReviewModal() {
 }
 
 async function submitReview() {
-  // Placeholder for submission logic
-  const reviewData = {
-    listingId: selectedListingId.value,
-    rating: reviewRating.value,
-    text: reviewText.value,
-  };
-  console.log("Submitting review:", reviewData);
-  closeReviewModal();
+  const response = await $fetch("/api/controller/user/agent/review", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      agentId: selectedListingAgentId.value,
+      review: reviewText.value,
+    }),
+  });
+
+  if (response.ok) closeReviewModal();
+  else alert("An error occurred, please submit again");
+}
+
+async function submitRating() {
+  const response = await $fetch("/api/controller/user/agent/rating", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      agentId: selectedListingAgentId.value,
+      rating: reviewRating.value,
+    }),
+  });
 }
 </script>
 

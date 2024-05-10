@@ -125,4 +125,34 @@ export class userEntity {
       return { ok: false, message: error.message };
     }
   }
+
+  // POST to add agent review
+  async addAgentReview(body: any) {
+    const { agentId, review } = body;
+
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { id: agentId },
+        { $push: { reviews: review } }
+      );
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+
+  // POST to add to agent rating
+  async addAgentRating(body: any) {
+    const { agentId, rating } = body;
+
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { id: agentId },
+        { $push: { ratings: rating } }
+      );
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
 }
