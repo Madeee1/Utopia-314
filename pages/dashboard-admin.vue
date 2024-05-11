@@ -13,9 +13,14 @@
 <main class="p-4">
   <h2 class="text-2xl font-bold">Admin Dashboard</h2>
   <p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
-  <button @click="showCreateRole = true">Create Role</button>
-  <button @click="getRoles">View Roles</button>
-  <button @click="deleteRoles">Delete Selected Roles</button>
+  <button @click="showCreateRole = true; searchUserProfile = false">Create Role</button>
+  <button @click="searchUserProfile = true; showCreateRole = false">Search User Profile</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; getRoles()">View Roles</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; viewUserAccount()">View User Account</button> 
+  <button @click="showCreateRole = false; searchUserProfile = false; editUserAccount()">Edit User Account</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; suspendAccount()">Suspend User Account</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; deleteRoles()">Delete Selected Roles</button>
+  
 </main>
     <div v-if="showCreateRole">
       <label for="role">Role:</label>
@@ -27,6 +32,15 @@
         style="border: 2px solid black; padding: 5px"
       />
       <button @click="createRole">Submit Role</button>
+    </div>
+    <div v-if="searchUserProfile">
+      <input
+      type="text"
+      v-model="searchQuery"
+      class="input"
+      placeholder="Search User Profile"
+    />
+    <button @click="searchUserProfile">Search User Profile</button>
     </div>
 
     <ul>
@@ -43,6 +57,7 @@ export default {
   data() {
     return {
       showCreateRole: false,
+      searchUserProfile: false,
       formData: {
         role: "",
       }
@@ -51,7 +66,7 @@ export default {
   methods: {
     async getRoles() {
       const response = await this.$fetch("/api/controller/"); //add controller
-      this.listings = response.value;
+      this.userRole = response.value;
     },
     async deleteRoles() {
       try {
@@ -75,6 +90,39 @@ export default {
   created() {
     this.getRoles();
   },
+  async suspendAccount(){
+    try{
+      const response = await this.$fetch("/api/controller/", { //add controller
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.selectedRoles),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to suspend account');
+      }
+      this.selectedRoles = [];
+    } catch (error) {
+      console.error('Failed to suspend account:', error.message);
+    }
+
+
+  },
+  async searchUserProfile(){
+    const response = await this.$fetch("/api/controller/"); //add controller
+    this.userProfile = response.value;
+  },
+  async viewUserAccount(){
+    const response = await this.$fetch("/api/controller/"); //add controller
+    this.userAccount = response.value;
+  },
+  async editUserAccount(){
+    const response = await this.$fetch("/api/controller/"); //add controller
+    this.userAccount = response.value;
+  },
+
 };
 </script>
 
@@ -103,6 +151,8 @@ button {
   color: white;
   border: none;
   cursor: pointer;
+  
+  margin-right: 15px;
 }
 
 button:hover {
