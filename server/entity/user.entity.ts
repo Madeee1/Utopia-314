@@ -47,6 +47,7 @@ export class userEntity {
         username: user.username,
         role: user.role,
         email: user.email,
+        id: user.id,
       };
     }
   }
@@ -70,20 +71,88 @@ export class userEntity {
       });
     }
   }
-}
 
-/*
-// pages/api/signup.js
-export default function (req: Request, res: Response) {
-        if (req.method === 'POST') {
-            // Handle sign up logic based on the role
-            const { username, email, password, role } = req.body;
-            // Perform validation, create user, etc.
-            // For brevity, assuming user creation is successful
-            const newUser = { username, email, role };
-            res.status(201).json({ user: newUser });
-        } else {
-            res.status(405).end(); // Method Not Allowed
-        }
+  // Update AGENT profile is here
+  async updateAgent(event: any, body: any) {
+    const { _id, email } = body;
+
+    // Update the user in the database
+    // Return the updated user
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { _id },
+        { email },
+        { new: true }
+      );
+      return { ok: true, response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
     }
-*/
+  }
+
+  // update BUYER profile is here
+  async updateBuyer(event: any, body: any) {
+    const { _id, email } = body;
+
+    // Update the user in the database
+    // Return the updated user
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { _id },
+        { email },
+        { new: true }
+      );
+      return { ok: true, response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+
+  // update SELLER profile is here
+  async updateSeller(event: any, body: any) {
+    const { _id, email } = body;
+
+    // Update the user in the database
+    // Return the updated user
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { _id },
+        { email },
+        { new: true }
+      );
+      return { ok: true, response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+
+  // POST to add agent review
+  async addAgentReview(body: any) {
+    const { agentId, review } = body;
+
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { id: agentId },
+        { $push: { reviews: review } }
+      );
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+
+  // POST to add to agent rating
+  async addAgentRating(body: any) {
+    const { agentId, rating } = body;
+
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { id: agentId },
+        { $push: { ratings: rating } }
+      );
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+}

@@ -47,15 +47,18 @@ export default {
       });
 
       if (signIn.ok) {
-        const { username, role, email } = signIn;
+        const { username, role, email, id } = signIn;
 
         sessionStorage.setItem("username", username);
         sessionStorage.setItem("role", role);
         sessionStorage.setItem("email", email);
+        sessionStorage.setItem("userId", id);
 
-        this.$router.push("/dashboard");
-      } else {
-        alert("Sign in failed. Please try again.");
+        if (role === "agent") this.$router.push("/dashboard-agent");
+        else if (role === "buyer") this.$router.push("/dashboard-buyer");
+        else if (role === "seller") this.$router.push("/dashboard-seller");
+        else if (role === "admin") this.$router.push("/dashboard-admin");
+        else this.$router.push("/signin");
       }
     },
   },

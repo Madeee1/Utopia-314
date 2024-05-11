@@ -2,16 +2,17 @@ export class Listing {
   // This is the entity for the listing table
   constructor() {}
 
-  async getListing() {
+  async getAgentListing(userIdQuery: any) {
     // This is the function that gets all the listings in the database
     try {
-      const listings = await listingSchema.find();
+      const listings = await listingSchema.find({
+        userId: parseInt(userIdQuery),
+      });
       return { value: listings, ok: true };
     } catch (error: any) {
       return { value: false, ok: false, error: error.message };
     }
   }
-
 
   async createListing(body: any) {
     // This is the function that creates a new listing in the database
@@ -21,6 +22,9 @@ export class Listing {
         location: body.location,
         price: body.price,
         description: body.description,
+        userId: body.userId,
+        sellerId: body.sellerId,
+        agentUsername: body.agentUsername,
       });
       await listing.save();
       return { value: listing, ok: true };
@@ -54,16 +58,32 @@ export class Listing {
     } catch (error: any) {
       return { value: false, ok: false, error: error.message };
     }
-  }  
+  }
 
-  async searchListings(query: string) {
+  async searchListings(query: string, userIdQuery: any) {
     try {
       const listings = await listingSchema.find({
-        $or: [
-          { name: { $regex: query, $options: "i" } },
-          { description: { $regex: query, $options: "i" } },
-          { location: { $regex: query, $options: "i" } }
-        ]
+        $and: [
+          { userId: parseInt(userIdQuery) },
+          {
+            $or: [
+              { name: { $regex: query, $options: "i" } },
+              { description: { $regex: query, $options: "i" } },
+              { location: { $regex: query, $options: "i" } },
+            ],
+          },
+        ],
+      });
+      return { value: listings, ok: true };
+    } catch (error: any) {
+      return { value: false, ok: false, error: error.message };
+    }
+  }
+
+  async getSellerListings(sellerIdQuery: any) {
+    try {
+      const listings = await listingSchema.find({
+        sellerId: parseInt(sellerIdQuery),
       });
       return { value: listings, ok: true };
     } catch (error: any) {

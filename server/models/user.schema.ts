@@ -22,12 +22,25 @@ export const userSchema = defineMongooseModel({
       type: String,
       required: true,
     },
+    id: {
+      type: Number,
+      required: false,
+      unique: true,
+    },
     // @ts-ignore
     uuid: {
       type: Types.ObjectId,
       required: true,
       unique: true,
       default: () => new Types.ObjectId(),
+    },
+    reviews: {
+      type: [String],
+      required: false,
+    },
+    ratings: {
+      type: [Number],
+      required: false,
     },
   },
   hooks(schema) {
@@ -37,6 +50,20 @@ export const userSchema = defineMongooseModel({
       if (!user.isModified("hashPassword")) return next();
       // Hash the password
       user.hashPassword = await bcrypt.hash(user.hashPassword, 10);
+      return next();
+    });
+
+    // Add a hook so that the id field is auto-incremented
+    schema.pre("save", async function (next) {
+      const user: any = this;
+      if (!user.isNew) return next();
+      // Get the last user in the database
+      const lastuser = await userSchema.findOne().sort({ id: -1 });
+      if (lastuser) {
+        user.id = lastuser.id + 1;
+      } else {
+        user.id = 1;
+      }
       return next();
     });
   },
