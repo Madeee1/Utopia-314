@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="relative w-full flex flex-col items-center h-24">
-      <h1 class="mt-4 text-2xl font-bold">Welcome, {{ username }}</h1>
+      <h1 class="mt-4 text-2xl font-bold">Welcome, {{ username }} ({{ role }})</h1>
       <h2 class="text-xl">Your ID is {{ userId }}</h2>
       <button
         class="logout-button absolute top-4 left-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
@@ -87,6 +87,7 @@ import { useRoute, useRouter } from "vue-router";
 const listings = ref([]);
 const username = computed(() => sessionStorage.getItem("username"));
 const userId = computed(() => sessionStorage.getItem("userId"));
+const role = computed(() => sessionStorage.getItem("role"));
 const router = useRouter();
 
 onMounted(async () => {

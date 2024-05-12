@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="relative flex items-center w-full">
-      <h1 class="mt-4">Welcome, {{ username }}</h1>
+      <h1 class="mt-4">Welcome, {{ username }} ({{ role }})</h1>
       <button
         class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded absolute top-4 left-4"
         @click="logout"
@@ -23,6 +23,13 @@
     <div class="flex gap-4 mb-4">
       <button class="btn" @click="showCreateDialog">Create Listing</button>
       <button class="btn" @click="getListing">Get Listing</button>
+      
+    </div>
+    <div v-if="reviews.length" class="grid grid-cols-3 gap-4"> <!-- Display reviews -->
+      <div class="card" v-for="review in reviews" :key="review.id">
+        <p class="card-text">{{ review.text }}</p>
+        <p class="card-text">Rating: {{ review.rating }}</p>
+      </div>
     </div>
     <div v-if="showDialog" class="overlay">
       <div class="modal">
@@ -99,7 +106,14 @@ const newListing = ref({
 });
 const listings = ref(null);
 const username = computed(() => sessionStorage.getItem("username"));
+const role = computed(() => sessionStorage.getItem("role"));
 const searchQuery = ref("");
+const reviews = ref([]); // State for holding reviews
+
+async function fetchReviews() {
+  const response = await $fetch(`/api/reviews?agentId=${sellerId.value}`); // Fetch reviews
+  reviews.value = response.ok ? response.value : [];
+}
 
 function showCreateDialog() {
   showDialog.value = true;
