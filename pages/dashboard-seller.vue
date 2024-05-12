@@ -129,7 +129,7 @@ function closeReviewModal() {
 }
 
 async function submitReview() {
-  const response = await $fetch("/api/controller/user/agent/review", {
+  const response = await $fetch("/api/controller/user/seller/review", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -143,7 +143,7 @@ async function submitReview() {
 }
 
 async function submitRating() {
-  const response = await $fetch("/api/controller/user/agent/rating", {
+  const response = await $fetch("/api/controller/user/seller/rating", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
