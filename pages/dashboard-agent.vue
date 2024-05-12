@@ -108,10 +108,12 @@ const listings = ref(null);
 const username = computed(() => sessionStorage.getItem("username"));
 const role = computed(() => sessionStorage.getItem("role"));
 const searchQuery = ref("");
+
+
 const reviews = ref([]); // State for holding reviews
 
 async function fetchReviews() {
-  const response = await $fetch(`/api/reviews?agentId=${sellerId.value}`); // Fetch reviews
+  const response = await $fetch(`/api/reviews?sellerId=${sellerId.value}`); // Fetch reviews
   reviews.value = response.ok ? response.value : [];
 }
 
