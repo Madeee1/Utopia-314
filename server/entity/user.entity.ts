@@ -126,8 +126,8 @@ export class userEntity {
     }
   }
 
-  // POST to add agent review
-  async addAgentReview(body: any) {
+
+  async addSellerReview(body: any) {
     const { agentId, review } = body;
 
     try {
@@ -141,8 +141,8 @@ export class userEntity {
     }
   }
 
-  // POST to add to agent rating
-  async addAgentRating(body: any) {
+  // POST to add to seller rating
+  async addSellerRating(body: any) {
     const { agentId, rating } = body;
 
     try {
@@ -155,4 +155,7 @@ export class userEntity {
       return { ok: false, message: error.message };
     }
   }
+
+
+
 }

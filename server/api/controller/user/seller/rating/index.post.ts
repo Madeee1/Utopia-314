@@ -14,6 +14,6 @@ class addSellerRatingController {
         const body = await readBody(event);
 
         const user = new userEntity();
-        return await user.addSellerRatin(body);
+        return await user.addSellerRating(body);
     }
 }
