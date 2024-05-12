@@ -2,7 +2,7 @@
     <div>
         <h1>Edit users</h1>
         <br />
-        <NuxtLink to="/sysAdmin" class="btn btn-danger"> Back </NuxtLink>
+        <NuxtLink to="/dashboard-admin" class="btn btn-danger"> Back </NuxtLink>
     </div>
     <br />
 

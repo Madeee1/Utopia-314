@@ -13,7 +13,7 @@
                 <form @submit.prevent="deleteProfile">
                     <div class="mb-3">
                     <label for="profile">Profile : </label>
-                    <input type="text" id="profile" v-model="profileData.profile" class="form-control" />
+                    <input type="text" v-model="deleteprofile"/>
                     </div>
                     <div class="mb-3">
                         <button type="submit">Delete</button>
@@ -27,6 +27,7 @@
 <script>
 export default {
   data() {
+    const model = defineModel('asd');
     return {
       profileData: {
         profile: "",
@@ -40,7 +41,7 @@ export default {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(this.profileData),
+        body: JSON.stringify(this.model),
       });
       if (deleteP === "Profile deleted successfully!"){
           alert("Profile deleted successfully!");

@@ -72,6 +72,48 @@ export class userEntity {
     }
   }
 
+  async viewUser(event:any, body: UserDto) {
+    const response = await userSchema.find({}, {username:1, _id:0});
+    
+    return {
+      users: response,
+    };
+  }
+
+  async deleteUser(event: any, body: UserDto) {
+    // Create profile in the database
+    // Return the created profile
+    try {
+      const response = await userSchema.deleteMany({
+        username: body.username,
+      });
+      return "User deleted successfully!";
+    } catch (error: any) {
+      throw createError({
+        statusCode: 400,
+        message: error.message,
+      });
+    }
+  }
+
+  async suspendUser(event: any, body: any) {
+    const { username } = body;
+    // add a column to the user schema to indicate if the user is suspended
+    // find the user in the database
+    // update the user's suspended column to true
+    // return the updated user
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { username },
+        { suspended: true },
+        { new: true }
+      );
+      return { ok: true, response };
+    }catch (error: any) {
+        return { ok: false, message: error.message };
+      }
+  }
+
   // Update AGENT profile is here
   async updateAgent(event: any, body: any) {
     const { _id, email } = body;

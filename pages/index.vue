@@ -12,5 +12,7 @@
     >
       Signin
     </button>
+
+    <NuxtLink to="/sysAdmin">Sys Admin</NuxtLink>
   </div>
 </template>
