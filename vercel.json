@@ -4,7 +4,8 @@
       "main": true,
       "staging": true,
       "Majeeds": false,
-      "Jc": false
+      "Jc": false,
+      "feat/unit-testing": false
     }
   }
 }
