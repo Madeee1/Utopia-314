@@ -23,7 +23,7 @@
     <div class="flex gap-4 mb-4">
       <button class="btn" @click="showCreateDialog">Create Listing</button>
       <button class="btn" @click="getListing">Get Listing</button>
-      
+      <button class="btn" @click="getReview">Show Reviews and rating</button>
     </div>
     <div v-if="reviews.length" class="grid grid-cols-3 gap-4"> <!-- Display reviews -->
       <div class="card" v-for="review in reviews" :key="review.id">
@@ -214,6 +214,11 @@ function getMongoIdById(id) {
     }
   }
   return null;
+}
+
+function getReview()
+{
+  navigateTo("/ReviewRating-Agent");
 }
 
 function moveToProfile() {
