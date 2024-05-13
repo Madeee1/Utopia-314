@@ -188,12 +188,6 @@ export class userEntity {
     };
   }
 
-  async suspendUser(event: any, body: any) {
-    const users = await userSchema.updateOne({username: body.username}, {"$set":{suspended: true}});
-
-    return { ok: true, users };
-  }
-
   async editUser(event: any, body: any) {
     const users = await userSchema.find({username:body.username}, {username:1, _id:0});
 

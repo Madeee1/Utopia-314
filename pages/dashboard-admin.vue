@@ -15,7 +15,7 @@
 <p>Welcome to the Admin Dashboard. Here you can manage User Profile and User Accounts.</p>
 <!-- UserProfile -->
 <button @click="createUserProfile = true; showProfile = false; createUserAccount = false; showAccount = false;">Create User Profile</button>
-<button @click="showProfile = true; createUserProfile = false; createUserAccount = false; showAccount = false; ">View User Profile</button>
+<button @click="showProfile = true; createUserProfile = false; createUserAccount = false; showAccount = false;">View User Profile</button>
 <br>
 
  <!-- UserAccount -->
@@ -32,31 +32,32 @@
   </form>
 </div>
 <div v-if="showProfile">
-  <form @submit.prevent="searchRole">
-    <input type="text" id="users" v-model="formData.profile" class="form-control" placeholder="Search Profile"/>
+  <form @submit.prevent="searchProfile">
+    <input type="text" id="profile" v-model="formData.profile" class="form-control" placeholder="Search Profile"/>
     <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
   <form @submit.prevent>
   <ul>
-    <li v-for="role in profile" :key="role.profile">
-      <input type="radio" v-model="selectedProfile" :value="role" />
-      {{ role.profile }}
+    <li v-for="profile in profiles" :key="profile.profiles">
+      <input type="radio" v-model="selectedProfile" :value="profile" name="profile"/>
+      {{ profile.profile }}
     </li>
-      <button type="submit">Delete Profile</button>
+      <button type="submit" @click.self="deleteProfile">Delete Profile</button>
+      <button type="submit" @click.self="suspendProfile">Suspend Profile</button>
   </ul>
   </form>
   </div>
 
 
 <div v-if="showAccount">
-  <form @submit.prevent="searchAccount">
+  <form @submit.prevent="searchUser">
     <input type="text" id="users" v-model="userForm.user" class="form-control" placeholder="Search Users"/>
     <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
   <form @submit.prevent>
   <ul>
     <li v-for="user in users" :key="user.username">
-      <input type="radio" v-model="selectedUsers" :value="user" />
+      <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
       {{ user.username }}
     </li>
     <button type="submit" @click.self="editUser">Edit User</button>  
@@ -129,7 +130,7 @@ methods: {
           const dictionary = {"profile": viewP.profiles[i].profile};
           profiles.push(dictionary);
       }
-    this.profile = profiles;
+    this.profiles = profiles;
   },
 
   async getUsers() {
@@ -144,7 +145,7 @@ methods: {
     this.users = users;
   },
 
-  async deleteRole() {
+  async deleteProfile() {
     try {
       const response = await $fetch("/api/controller/sysadmin/deleteProfile", { //add controller
         method: "POST",
@@ -201,7 +202,7 @@ methods: {
           const dictionary = {"profile": searchP.profiles[i].profile};
           profiles.push(dictionary);
       }
-    this.profile = profiles;
+    this.profiles = profiles;
   },
 
   async searchUser() {

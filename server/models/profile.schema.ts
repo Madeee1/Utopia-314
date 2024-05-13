@@ -10,4 +10,8 @@ export const profileSchema = defineMongooseModel({
       unique: true,
     },
   },
+  suspended:{
+    type: Boolean,
+    default: false,
+  }
 });
