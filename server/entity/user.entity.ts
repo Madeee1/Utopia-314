@@ -126,8 +126,7 @@ export class userEntity {
     }
   }
 
-  // POST to add agent review
-  async addAgentReview(body: any) {
+  async addSellerReview(body: any) {
     const { agentId, review } = body;
 
     try {
@@ -141,8 +140,8 @@ export class userEntity {
     }
   }
 
-  // POST to add to agent rating
-  async addAgentRating(body: any) {
+  // POST to add to seller rating
+  async addSellerRating(body: any) {
     const { agentId, rating } = body;
 
     try {
@@ -150,6 +149,26 @@ export class userEntity {
         { id: agentId },
         { $push: { ratings: rating } }
       );
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+
+  // from Agent to GET reviews
+  async getReviews(userIdQuery: any) {
+    try {
+      const response = await userSchema.find({ id: userIdQuery });
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+
+  // from Agent to GET ratings
+  async getRatings(userIdQuery: any) {
+    try {
+      const response = await userSchema.find({ id: userIdQuery });
       return { ok: true, value: response };
     } catch (error: any) {
       return { ok: false, message: error.message };

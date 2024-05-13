@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="relative w-full flex flex-col items-center h-24">
-      <h1 class="mt-4 text-2xl font-bold">Welcome, {{ username }}</h1>
+      <h1 class="mt-4 text-2xl font-bold">Welcome, {{ username }} ({{ role }})</h1>
       <h2 class="text-xl">Your ID is {{ userId }}</h2>
       <button
         class="logout-button absolute top-4 left-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
@@ -33,8 +33,10 @@
         >
         <p class="card-text">Views: {{ listing.views }}</p>
         <p class="card-text">Shortlist Count: {{ listing.shortlistNumber }}</p>
-        <button class="btn" @click="showReviewModal(listing.userId)">
-          Rate and Review my agent
+        <button
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          @click="showReviewModal(listing.userId)"
+        >Rate and Review my agent
         </button>
       </div>
     </div>
@@ -84,6 +86,7 @@ import { useRoute, useRouter } from "vue-router";
 const listings = ref([]);
 const username = computed(() => sessionStorage.getItem("username"));
 const userId = computed(() => sessionStorage.getItem("userId"));
+const role = computed(() => sessionStorage.getItem("role"));
 const router = useRouter();
 
 onMounted(async () => {
@@ -125,7 +128,7 @@ function closeReviewModal() {
 }
 
 async function submitReview() {
-  const response = await $fetch("/api/controller/user/agent/review", {
+  const response = await $fetch("/api/controller/user/seller/review", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -139,7 +142,7 @@ async function submitReview() {
 }
 
 async function submitRating() {
-  const response = await $fetch("/api/controller/user/agent/rating", {
+  const response = await $fetch("/api/controller/user/seller/rating", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

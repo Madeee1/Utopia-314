@@ -1,19 +1,19 @@
 import { userEntity } from "~/server/entity/user.entity";
 
 export default defineEventHandler(async (event) => {
-    const controller = new addAgentRatingController();
+    const controller = new addSellerRatingController();
     
-    return await controller.addAgentRating(event);
+    return await controller.addSellerRating(event);
     }
 );
 
-class addAgentRatingController {
+class addSellerRatingController {
     constructor() {}
     
-    async addAgentRating(event: any) {
+    async addSellerRating(event: any) {
         const body = await readBody(event);
 
         const user = new userEntity();
-        return await user.addAgentRating(body);
+        return await user.addSellerRating(body);
     }
 }
