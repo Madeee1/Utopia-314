@@ -1,18 +1,28 @@
-import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { setup, $fetch, isDev } from "@nuxt/test-utils";
+import { mount } from "@vue/test-utils";
+import index from "@/pages/index.vue";
+import Signin from "@/pages/signin.vue";
+import Signup from "@/pages/signup.vue";
 
 describe("sprint 1", async () => {
-  await setup({
-    rootDir: "/",
-    server: true,
-  });
-
   it("Renders sign in button", async () => {
-    expect(await $fetch("/")).toMatch("Signin");
+    const wrapper = mount(index);
+    expect(wrapper.text()).toContain("Signin");
   });
 
   it("Renders sign up button", async () => {
-    expect(await $fetch("/")).toMatch("Signup");
+    const wrapper = mount(index);
+    expect(wrapper.text()).toContain("Signup");
+  });
+
+  it("Sign up page has a form", async () => {
+    const wrapper = mount(Signup);
+    expect(wrapper.find("form").exists()).toBe(true);
+  });
+
+  it("Sign in page has a form", async () => {
+    const wrapper = mount(Signin);
+    expect(wrapper.find("form").exists()).toBe(true);
   });
 });
