@@ -25,7 +25,8 @@
       <button class="btn" @click="getListing">Get Listing</button>
       <button class="btn" @click="getReview">Show Reviews and rating</button>
     </div>
-    <div v-if="reviews.length" class="grid grid-cols-3 gap-4"> <!-- Display reviews -->
+    <div v-if="reviews.length" class="grid grid-cols-3 gap-4">
+      <!-- Display reviews -->
       <div class="card" v-for="review in reviews" :key="review.id">
         <p class="card-text">{{ review.text }}</p>
         <p class="card-text">Rating: {{ review.rating }}</p>
@@ -219,8 +220,7 @@ function getMongoIdById(id) {
   return null;
 }
 
-function getReview()
-{
+function getReview() {
   navigateTo("/ReviewRating-Agent");
 }
 
