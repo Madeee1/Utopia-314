@@ -25,16 +25,16 @@
 
 
   <div v-if="createUserProfile">
-    <form @submit.prevent="createProfile(); getProfile()">
+    <form @submit.prevent="createProfile">
     <label for="profile">User Profile:</label>
     <input type="text" id="profile" v-model="profileData.profile" required class="form-control"/>
     <button type="submit">Create User Profile</button>
   </form>
 </div>
 <div v-if="showProfile">
-  <form @submit.prevent> 
+  <form @submit.prevent="searchProfile"> 
     <input type="text" id="sProfile" v-model="profileSearch.profile" class="form-control" placeholder="Search Profile"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;" @click="searchProfile(); getProfile()">Search</button>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
   <form @submit.prevent>
   <ul>
@@ -42,14 +42,14 @@
       <input type="radio" v-model="selectedProfile" :value="profile" name="profile"/>
       {{ profile.profile }}
     </li>
-      <button type="submit" @click="deleteProfile(); getProfile();">Delete Profile</button>
+      <button type="submit" @click.self="deleteProfile">Delete Profile</button>
       <button type="submit" @click.self="suspendProfile">Suspend Profile</button>
   </ul>
   </form>
   </div>
 
   <div v-if="createUserAccount">
-    <form @submit.prevent="createAccount(); getProfile();">
+    <form @submit.prevent="createAccount">
       <label for="username">Username:</label>
       <input
         type="text"
@@ -107,7 +107,7 @@
       <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
       {{ user.username }}
     </li>
-    <button type="submit" @click.self="editUser(); " >Edit User</button>  
+    <button type="submit" @click.self="editUser" >Edit User</button>  
     <button type="submit" @click.self="deleteUser">Delete User</button>
   </ul>
   </form>
@@ -161,7 +161,6 @@ data() {
 },
 methods: {
   async createProfile() {
-    console.log(this.profileData)
     const createP = await $fetch("/api/controller/sysadmin/createProfile", {
       method: "POST",
       headers: {
@@ -170,6 +169,7 @@ methods: {
       body: JSON.stringify(this.profileData),
     });
     if (createP === "Profile created successfully!"){
+        await this.getProfile();
         alert("Profile created successfully!");
     } else {
         alert("Profile not created!");
@@ -177,18 +177,22 @@ methods: {
   },
 
   async createAccount() {
-    console.log(this.userData);
-      const signUp = await $fetch("/api/controller/sysadmin/createAccount", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.userData),
-      });
-      if (signUp.ok) {
-        alert("Account created successfully!");
-      } else {
-        alert("Account creation failed. Please try again.");
+    try{
+        const signUp = await $fetch("/api/controller/sysadmin/createAccount", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.userData),
+        });
+        if (signUp.ok) {
+          await this.getUsers();
+          alert("Account created successfully!");
+        } else {
+          alert("Account creation failed. Please try again.");
+        }
+      } catch (error) {
+        console.error('Failed to create account:', error.message);
       }
     },
 
@@ -233,6 +237,7 @@ methods: {
         alert("Profile deleted successfully!");
       }
       this.selectedProfile = [];
+      await this.getProfile();
     } catch (error) {
       console.error('Failed to delete profile:', error.message);
     }
@@ -255,42 +260,63 @@ methods: {
         alert("User deleted successfully!");
       }
       this.selectedUsers = [];
+      await this.getUsers();
     } catch (error) {
       console.error('Failed to delete users:', error.message);
     }
   },
 
   async searchProfile() {
-    const searchP = await $fetch("/api/controller/sysadmin/searchProfile", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(this.profileSearch),
-    }); //add controller
-    const profiles = [];
-      for (let i = 0; i < searchP.profiles.length; i++) {
-          const dictionary = {"profile": searchP.profiles[i].profile};
-          profiles.push(dictionary);
+    try{
+      const searchP = await $fetch("/api/controller/sysadmin/searchProfile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.profileSearch),
+      }); //add controller
+      const profiles = [];
+        for (let i = 0; i < searchP.profiles.length; i++) {
+            const dictionary = {"profile": searchP.profiles[i].profile};
+            profiles.push(dictionary);
+            
+        }
+      this.profiles = profiles;
+      if (profiles.length === 0){
+          alert("Profile not found!");
+          this.getProfile();
       }
-    this.profiles = profiles;
-  },
+      this.$forceUpdate();
+    } catch (error) {
+      console.error('Failed to search profile:', error.message);
+      }
+ },
 
   async searchUser() {
-    const searchU = await $fetch("/api/controller/sysadmin/searchUser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(this.userSearch),
-    }); //add controller
-    const users = [];
-      for (let i = 0; i < searchU.users.length; i++) {
-          const dictionary = {"username": searchU.users[i].username};
-          users.push(dictionary);
+    try{
+      const searchU = await $fetch("/api/controller/sysadmin/searchUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.userSearch),
+      }); //add controller
+      const users = [];
+        for (let i = 0; i < searchU.users.length; i++) {
+            const dictionary = {"username": searchU.users[i].username};
+            users.push(dictionary);
+        }
+      this.users = users;
+      if (users.length === 0){
+          this.getUsers();
+          alert("User not found!");
       }
-    this.users = users;
-  },
+      this.$forceUpdate();
+    } catch (error) {
+      console.error('Failed to search user:', error.message);
+      }
+},
+
   async editUser() {
     console.log(this.selectedUsers);
     const suspendU = await $fetch("/api/controller/sysadmin/editUser", {
