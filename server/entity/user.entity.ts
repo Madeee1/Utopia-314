@@ -127,11 +127,11 @@ export class userEntity {
   }
 
   async addSellerReview(body: any) {
-    const { sellerId, review } = body;
+    const { agentId, review } = body;
 
     try {
       const response = await userSchema.findOneAndUpdate(
-        { id: sellerId },
+        { id: agentId },
         { $push: { reviews: review } }
       );
       return { ok: true, value: response };
@@ -142,11 +142,11 @@ export class userEntity {
 
   // POST to add to seller rating
   async addSellerRating(body: any) {
-    const { sellerId, rating } = body;
+    const { agentId, rating } = body;
 
     try {
       const response = await userSchema.findOneAndUpdate(
-        { id: sellerId },
+        { id: agentId },
         { $push: { ratings: rating } }
       );
       return { ok: true, value: response };
