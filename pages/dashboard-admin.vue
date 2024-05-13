@@ -62,7 +62,10 @@
 </template>
 
 <script>
+import LogOutButton from "~/components/LogOutButton.vue";
+
 export default {
+<<<<<<< HEAD
 data() {
   return {
     showCreateRole: false,
@@ -107,6 +110,38 @@ methods: {
       for (let i = 0; i < viewP.profiles.length; i++) {
           const dictionary = {"profile": viewP.profiles[i].profile};
           profiles.push(dictionary);
+=======
+  data() {
+    return {
+      showCreateRole: false,
+      formData: {
+        role: "",
+      },
+    };
+  },
+  methods: {
+    async getRoles() {
+      const response = await this.$fetch("/api/controller/"); //add controller
+      this.listings = response.value;
+    },
+    async deleteRoles() {
+      try {
+        const response = await this.$fetch("/api/controller/", {
+          //add controller
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.selectedRoles),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to delete roles");
+        }
+        this.selectedRoles = [];
+      } catch (error) {
+        console.error("Failed to delete roles:", error.message);
+>>>>>>> Majeeds
       }
     this.roles = profiles;
   },
@@ -282,5 +317,3 @@ button:hover {
 background-color: #45a049;
 }
 </style>
-
-
