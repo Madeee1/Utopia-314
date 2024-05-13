@@ -14,6 +14,7 @@
   <h2 class="text-2xl font-bold">Buyer Dashboard</h2>
   <p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
   <button @click="onClickDisabled(); Listings = true; showListings();">View Listings</button>
+  <button @click="onClickDisabled(); oldListings = true; showOldListings();">View Old Listings</button>
   <button @click="onClickDisabled(); calculateMortgage = true">Calculate Mortgage</button>
   <button @click="onClickDisabled(); showFavourites = true">Favourites</button>
 </div>
@@ -26,7 +27,15 @@
 
     <div v-if="Listings">
     <ul>
-      <li v-for="listing in listings" :key="listing.name">
+      <li v-for="listing in listings" :key="listing">
+        {{ listing }}
+      </li>
+    </ul>
+    </div>
+
+    <div v-if="oldListings">
+    <ul>
+      <li v-for="listing in oldlistings" :key="listing">
         {{ listing }}
       </li>
     </ul>
@@ -52,12 +61,25 @@ export default {
       const showL = await $fetch("/api/controller/user/buyer/showListings", {
         method: "POST",
       }); //add controller
+      console.log(showL.listings[0])
       const listings = [];
         for (let i = 0; i < showL.listings.length; i++) {
             const dictionary = {"name": showL.listings[i]};
             listings.push(dictionary);
         }
       this.listings = listings;
+    },
+
+    async showOldListings() {
+      const showO = await $fetch("/api/controller/user/buyer/showListings", {
+        method: "POST",
+      }); //add controller
+      const oldlistings = [];
+        for (let i = 0; i < showO.listings.length; i++) {
+            const dictionary = {"name": showO.listings[i]};
+            oldlistings.push(dictionary);
+        }
+      this.oldlistings = oldlistings;
     },
 
     async calculate(){
@@ -73,7 +95,9 @@ export default {
     
     }
   },
-
+  created(){
+      this.showListings();
+  }
   
 };
 </script>
