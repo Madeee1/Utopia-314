@@ -29,20 +29,39 @@
   </form>
 </div>
 
-<div v-if="showRoles">
-  <form @submit.prevent="searchRoles">
-    <input type="text" id="users" v-model="formData.profile" class="form-control" placeholder="Search Roles"/>
+<div v-if="showProfile">
+  <form @submit.prevent="searchRole">
+    <input type="text" id="users" v-model="formData.profile" class="form-control" placeholder="Search Profile"/>
     <button type="submit" style="padding:2px 4px; border-radius: 6px;">Submit</button>
   </form>
-  <form @submit.prevent="deleteRole">
+  <form @submit.prevent>
   <ul>
-    <li v-for="role in roles" :key="role.profile">
-      <input type="radio" v-model="selectedRoles" :value="role" />
+    <li v-for="role in profile" :key="role.profile">
+      <input type="radio" v-model="selectedProfile" :value="role" />
       {{ role.profile }}
     </li>
+      <button type="submit" @click.self="suspendProfile">Suspend User</button>
+      <button type="submit">Delete Selected Role</button>
   </ul>
-    <button type="submit">Delete Selected Role</button>
   </form>
+  </div>
+
+<div v-if="showUsers">
+  <form @submit.prevent="searchUser">
+    <input type="text" id="users" v-model="userForm.user" class="form-control" placeholder="Search Users"/>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Submit</button>
+  </form>
+  <form @submit.prevent>
+  <ul>
+    <li v-for="user in users" :key="user.username">
+      <input type="radio" v-model="selectedUsers" :value="user" />
+      {{ user.username }}
+    </li>
+      <button type="submit" @click.self="deleteUser">Delete Selected User</button>
+      <button type="submit" @click.self="editUser">Edit User</button>
+  </ul>
+  </form>
+  </div>
   </div>
 
 <div v-if="showUsers">
@@ -90,6 +109,7 @@ data() {
   return {
     showCreateRole: false,
     showRoles: false,
+    showProfile: false,
     showUsers: false,
     formData: {
       profile: "",
@@ -104,6 +124,7 @@ methods: {
   async onClickDisabled() {
     this.showCreateRole = false;
     this.showRoles = false;
+    this.showProfile = false;
     this.showUsers = false;
   },
 
@@ -122,7 +143,7 @@ methods: {
     } 
   },
 
-  async getRoles() {
+  async getProfile() {
     const viewP = await $fetch("/api/controller/sysadmin/viewProfile", {
       method: "POST",
     }); //add controller
@@ -131,7 +152,7 @@ methods: {
           const dictionary = {"profile": viewP.profiles[i].profile};
           profiles.push(dictionary);
       }
-    this.roles = profiles;
+    this.profile = profiles;
   },
 
   async getUsers() {
@@ -153,18 +174,18 @@ methods: {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(this.selectedRoles),
+        body: JSON.stringify(this.selectedProfile),
       });
 
       if (response !== "Profile deleted successfully!") {
         alert("Profile not deleted!");
-        throw new Error('Failed to delete roles');
+        throw new Error('Failed to delete profile');
       }else{
         alert("Profile deleted successfully!");
       }
-      this.selectedRoles = [];
+      this.selectedProfile = [];
     } catch (error) {
-      console.error('Failed to delete roles:', error.message);
+      console.error('Failed to delete profile:', error.message);
     }
   },
 
@@ -190,7 +211,7 @@ methods: {
     }
   },
 
-  async searchRoles() {
+  async searchProfile() {
     const searchP = await $fetch("/api/controller/sysadmin/searchProfile", {
       method: "POST",
       headers: {
@@ -203,7 +224,7 @@ methods: {
           const dictionary = {"profile": searchP.profiles[i].profile};
           profiles.push(dictionary);
       }
-    this.roles = profiles;
+    this.profile = profiles;
   },
 
   async searchUser() {
@@ -219,8 +240,9 @@ methods: {
           const dictionary = {"username": searchU.users[i].username};
           users.push(dictionary);
       }
-    this.roles = users;
+    this.profile = users;
   },
+},
 
   async editUser() {
     const suspendU = await $fetch("/api/controller/sysadmin/editUser", {
@@ -232,18 +254,18 @@ methods: {
     });
   },
 
-  async suspendUser() {
-    const suspendU = await $fetch("/api/controller/sysadmin/suspendUser", {
+  async suspendProfile() {
+    const suspendU = await $fetch("/api/controller/sysadmin/suspendProfile", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.selectedUsers),
+      body: JSON.stringify(this.selectedProfile),
     });
     if (suspendU.ok){
-        alert("User suspended successfully!");
+        alert("Profile suspended successfully!");
     } else {
-        alert("User not suspended!");
+        alert("Profile not suspended!");
     } 
   },
 },
@@ -251,7 +273,7 @@ methods: {
 
 
 created() {
-  this.getRoles();
+  this.getProfile();
   this.getUsers();
 },
 };
