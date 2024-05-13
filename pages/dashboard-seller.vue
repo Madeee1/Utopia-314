@@ -3,18 +3,14 @@
     <div class="relative w-full flex flex-col items-center h-24">
       <h1 class="mt-4 text-2xl font-bold">Welcome, {{ username }} ({{ role }})</h1>
       <h2 class="text-xl">Your ID is {{ userId }}</h2>
-      <button
-        class="logout-button absolute top-4 left-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-        @click="logout"
-      >
-        Log Out
+      
+      <button class="logout-button absolute top-4 left-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+        @click="logout">Log Out
       </button>
-      <button
-        class="btn absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-        @click="moveToProfile"
-      >
-        Update Profile
-      </button>
+      <button class="btn absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        @click="moveToProfile">Update Profile</button>
+      <button class="btn  absolute top-24 left-4 bg-pink-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+        @click="mysold">Sold properties</button>
     </div>
     <div
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
@@ -104,6 +100,11 @@ async function fetchListings() {
 
 function moveToProfile() {
   router.push("/profile");
+}
+
+function mysold()
+{
+  navigateTo("/Seller-Sold");
 }
 
 function logout() {
