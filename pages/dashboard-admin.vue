@@ -15,57 +15,104 @@
 <p>Welcome to the Admin Dashboard. Here you can manage User Profile and User Accounts.</p>
 <!-- UserProfile -->
 <button @click="createUserProfile = true; showProfile = false; createUserAccount = false; showAccount = false;">Create User Profile</button>
-<button @click="showProfile = true; createUserProfile = false; createUserAccount = false; showAccount = false; ">View User Profile</button>
+<button @click="showProfile = true; createUserProfile = false; createUserAccount = false; showAccount = false; getProfile();">View User Profile</button>
 <br>
 
  <!-- UserAccount -->
 <button @click="createUserAccount = true; showProfile = false; createUserProfile = false; showAccount = false; ">Create User Account</button>
-<button @click="showAccount = true; createUserAccount = false; showProfile = false; createUserProfile = false; ">View User Account</button>
+<button @click="showAccount = true; createUserAccount = false; showProfile = false; createUserProfile = false; getUsers();">View User Account</button>
 </div>
 
 
   <div v-if="createUserProfile">
-    <form @submit.prevent="createProfile">
+    <form @submit.prevent="createProfile(); getProfile()">
     <label for="profile">User Profile:</label>
-    <input type="text" id="profile" v-model="formData.profile" required class="form-control"/>
+    <input type="text" id="profile" v-model="profileData.profile" required class="form-control"/>
     <button type="submit">Create User Profile</button>
   </form>
 </div>
 <div v-if="showProfile">
-  <form @submit.prevent="searchRole">
-    <input type="text" id="users" v-model="formData.profile" class="form-control" placeholder="Search Profile"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
+  <form @submit.prevent> 
+    <input type="text" id="sProfile" v-model="profileSearch.profile" class="form-control" placeholder="Search Profile"/>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;" @click="searchProfile(); getProfile()">Search</button>
   </form>
   <form @submit.prevent>
   <ul>
-    <li v-for="role in profile" :key="role.profile">
-      <input type="radio" v-model="selectedProfile" :value="role" />
-      {{ role.profile }}
+    <li v-for="profile in profiles" :key="profile.profiles">
+      <input type="radio" v-model="selectedProfile" :value="profile" name="profile"/>
+      {{ profile.profile }}
     </li>
-      <button type="submit">Delete Profile</button>
+      <button type="submit" @click="deleteProfile(); getProfile();">Delete Profile</button>
+      <button type="submit" @click.self="suspendProfile">Suspend Profile</button>
   </ul>
   </form>
   </div>
 
+  <div v-if="createUserAccount">
+    <form @submit.prevent="createAccount(); getProfile();">
+      <label for="username">Username:</label>
+      <input
+        type="text"
+        id="username"
+        v-model="userData.username"
+        required
+        style="border: 2px solid black; padding: 5px"
+      />
+
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        v-model="userData.email"
+        required
+        style="border: 2px solid black; padding: 5px"
+      />
+
+      <label for="password">Password:</label>
+      <input
+        type="password"
+        id="password"
+        v-model="userData.password"
+        required
+        style="border: 2px solid black; padding: 5px"
+      />
+
+      <label for="role">Role:</label>
+      <select
+        id="role"
+        v-model="userData.role"
+        required
+        style="border: 2px solid black; padding: 5px"
+      >
+        <option value="admin">System Admin</option>
+        <option value="agent">Real Estate Agent</option>
+        <option value="seller">Seller</option>
+        <option value="buyer">Buyer</option>
+      </select>
+
+      <button type="submit">Sign Up</button>
+      <!-- // <p v-if="signUpStatus === 'success'">Signup successful!</p> 
+      <p v-if="signUpStatus === 'error'">Signup failed. Please try again.</p> -->
+    </form>
+</div>
 
 <div v-if="showAccount">
-  <form @submit.prevent="searchAccount">
-    <input type="text" id="users" v-model="userForm.user" class="form-control" placeholder="Search Users"/>
+  <form @submit.prevent="searchUser">
+    <input type="text" id="users" v-model="userSearch.username" class="form-control" placeholder="Search Users"/>
     <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
   <form @submit.prevent>
   <ul>
     <li v-for="user in users" :key="user.username">
-      <input type="radio" v-model="selectedUsers" :value="user" />
+      <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
       {{ user.username }}
     </li>
-    <button type="submit" @click.self="editUser">Edit User</button>  
+    <button type="submit" @click.self="editUser(); " >Edit User</button>  
     <button type="submit" @click.self="deleteUser">Delete User</button>
   </ul>
   </form>
   </div>
   </div>
-  
   
   <div v-if="searchUserAccount">
       <input
@@ -95,23 +142,32 @@ data() {
     showProfile: false,
     createUserAccount: false,
     showAccount: false,
-    
-    formData: {
+    profileSearch: {
       profile: "",
     },
-    userForm: {
-      user: "",
+    userSearch: {
+      username: "",
+    },
+    userData:{
+      username: "",
+      email: "",
+      password: "",
+      role: "",
+    },
+    profileData:{
+      profile: "",
     },
   };
 },
 methods: {
   async createProfile() {
+    console.log(this.profileData)
     const createP = await $fetch("/api/controller/sysadmin/createProfile", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.formData),
+      body: JSON.stringify(this.profileData),
     });
     if (createP === "Profile created successfully!"){
         alert("Profile created successfully!");
@@ -119,6 +175,22 @@ methods: {
         alert("Profile not created!");
     } 
   },
+
+  async createAccount() {
+    console.log(this.userData);
+      const signUp = await $fetch("/api/controller/sysadmin/createAccount", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.userData),
+      });
+      if (signUp.ok) {
+        alert("Account created successfully!");
+      } else {
+        alert("Account creation failed. Please try again.");
+      }
+    },
 
   async getProfile() {
     const viewP = await $fetch("/api/controller/sysadmin/viewProfile", {
@@ -129,7 +201,7 @@ methods: {
           const dictionary = {"profile": viewP.profiles[i].profile};
           profiles.push(dictionary);
       }
-    this.profile = profiles;
+    this.profiles = profiles;
   },
 
   async getUsers() {
@@ -144,7 +216,7 @@ methods: {
     this.users = users;
   },
 
-  async deleteRole() {
+  async deleteProfile() {
     try {
       const response = await $fetch("/api/controller/sysadmin/deleteProfile", { //add controller
         method: "POST",
@@ -194,14 +266,14 @@ methods: {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.formData),
+      body: JSON.stringify(this.profileSearch),
     }); //add controller
     const profiles = [];
       for (let i = 0; i < searchP.profiles.length; i++) {
           const dictionary = {"profile": searchP.profiles[i].profile};
           profiles.push(dictionary);
       }
-    this.profile = profiles;
+    this.profiles = profiles;
   },
 
   async searchUser() {
@@ -210,16 +282,17 @@ methods: {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.userForm),
+      body: JSON.stringify(this.userSearch),
     }); //add controller
     const users = [];
       for (let i = 0; i < searchU.users.length; i++) {
           const dictionary = {"username": searchU.users[i].username};
           users.push(dictionary);
       }
-    this.profile = users;
+    this.users = users;
   },
   async editUser() {
+    console.log(this.selectedUsers);
     const suspendU = await $fetch("/api/controller/sysadmin/editUser", {
       method: "POST",
       headers: {
@@ -243,10 +316,11 @@ methods: {
     } 
   },
 },
-async created() {
-    await this.getProfile();
-    await this.getUsers();
+  async created() {
+      await this.getProfile();
+      await this.getUsers();
   },
+
 }
 
 </script>

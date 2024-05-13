@@ -55,5 +55,11 @@ export class profileEntity {
         });
       }
     }
+
+    async suspendProfile(event: any, body: any) {
+      const profiles = await profileSchema.updateOne({profile: body.profile}, {"$set":{suspended: true}});
+  
+      return { ok: true, profiles };
+    }
   }
 

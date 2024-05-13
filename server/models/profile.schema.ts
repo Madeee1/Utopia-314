@@ -9,5 +9,10 @@ export const profileSchema = defineMongooseModel({
       required: true,
       unique: true,
     },
+    suspended:{
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
 });

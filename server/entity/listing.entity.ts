@@ -92,7 +92,7 @@ export class Listing {
   }
 
   async viewListing(body: any) {
-    const listings = await listingSchema.find({}, {name:1, _id:0});
+    const listings = await listingSchema.find();
     
     return {
       listings: listings,

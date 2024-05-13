@@ -164,6 +164,25 @@ export class userEntity {
     };
   }
 
+  async createUser(event: any, body: UserDto) {
+    // Create user in the database
+    // Return the created user
+    try {
+      const response = await userSchema.create({
+        username: body.username,
+        email: body.email,
+        hashPassword: body.password,
+        role: body.role,
+      });
+      return { ok: true };
+    } catch (error: any) {
+      throw createError({
+        statusCode: 400,
+        message: error.message,
+      });
+    }
+  }
+
   async deleteUser(event: any, body: UserDto) {
     // Create profile in the database
     // Return the created profile
@@ -186,12 +205,6 @@ export class userEntity {
     return {
       users: users,
     };
-  }
-
-  async suspendUser(event: any, body: any) {
-    const users = await userSchema.updateOne({username: body.username}, {"$set":{suspended: true}});
-
-    return { ok: true, users };
   }
 
   async editUser(event: any, body: any) {
