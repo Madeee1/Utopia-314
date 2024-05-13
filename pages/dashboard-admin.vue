@@ -48,6 +48,53 @@
   </form>
   </div>
 
+  <div v-if="createUserAccount">
+    <form @submit.prevent="createAccount">
+      <label for="username">Username:</label>
+      <input
+        type="text"
+        id="username"
+        v-model="userData.username"
+        required
+        style="border: 2px solid black; padding: 5px"
+      />
+
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        v-model="userData.email"
+        required
+        style="border: 2px solid black; padding: 5px"
+      />
+
+      <label for="password">Password:</label>
+      <input
+        type="password"
+        id="password"
+        v-model="userData.password"
+        required
+        style="border: 2px solid black; padding: 5px"
+      />
+
+      <label for="role">Role:</label>
+      <select
+        id="role"
+        v-model="userData.role"
+        required
+        style="border: 2px solid black; padding: 5px"
+      >
+        <option value="admin">System Admin</option>
+        <option value="agent">Real Estate Agent</option>
+        <option value="seller">Seller</option>
+        <option value="buyer">Buyer</option>
+      </select>
+
+      <button type="submit">Sign Up</button>
+      <!-- // <p v-if="signUpStatus === 'success'">Signup successful!</p> 
+      <p v-if="signUpStatus === 'error'">Signup failed. Please try again.</p> -->
+    </form>
+</div>
 
 <div v-if="showAccount">
   <form @submit.prevent="searchUser">
@@ -103,6 +150,12 @@ data() {
     userForm: {
       user: "",
     },
+    userData:{
+      username: "",
+      email: "",
+      password: "",
+      role: "",
+    },
   };
 },
 methods: {
@@ -120,6 +173,22 @@ methods: {
         alert("Profile not created!");
     } 
   },
+
+  async createAccount() {
+    console.log(this.userData);
+      const signUp = await $fetch("/api/controller/sysadmin/createAccount", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.userData),
+      });
+      if (signUp.ok) {
+        alert("Account created successfully!");
+      } else {
+        alert("Account creation failed. Please try again.");
+      }
+    },
 
   async getProfile() {
     const viewP = await $fetch("/api/controller/sysadmin/viewProfile", {
@@ -244,9 +313,9 @@ methods: {
     } 
   },
 },
-async created() {
-    await this.getProfile();
-    await this.getUsers();
+  async created() {
+      await this.getProfile();
+      await this.getUsers();
   },
 }
 
