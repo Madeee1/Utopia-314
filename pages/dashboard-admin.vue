@@ -12,7 +12,11 @@
 
 <div class="center">
 <h2 class="text-2xl font-bold">Admin Dashboard</h2>
-<p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
+<p>Welcome to the Admin Dashboard. Here you can manage User Profile and User Accounts.</p>
+<button @click="onClickDisabled(); showCreateRole = true;">Create User Profile</button>
+<button @click="onClickDisabled(); showRoles = true; getRoles(); ">View User Profile</button>
+<button @click="onClickDisabled(); showUsers = true; getUsers(); ">View Users</button>
+<br>
 <button @click="onClickDisabled(); showCreateRole = true;">Create Role</button>
 <button @click="onClickDisabled(); showRoles = true; getRoles(); ">View Roles</button>
 <button @click="onClickDisabled(); showUsers = true; getUsers(); ">View Users</button>
