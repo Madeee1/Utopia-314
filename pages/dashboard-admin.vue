@@ -13,26 +13,28 @@
 <div class="center">
 <h2 class="text-2xl font-bold">Admin Dashboard</h2>
 <p>Welcome to the Admin Dashboard. Here you can manage User Profile and User Accounts.</p>
-<button @click="onClickDisabled(); showCreateRole = true;">Create User Profile</button>
-<button @click="onClickDisabled(); showProfile = true; getProfile(); ">View User Profile</button>
-
+<!-- UserProfile -->
+<button @click="createUserProfile = true; showProfile = false; createUserAccount = false; showAccount = false;">Create User Profile</button>
+<button @click="showProfile = true; createUserProfile = false; createUserAccount = false; showAccount = false; ">View User Profile</button>
 <br>
-<button @click="onClickDisabled(); showCreateRole = true;">Create User Account</button>
-<button @click="onClickDisabled(); showRoles = true; getProfile(); ">View User Account</button>
 
+ <!-- UserAccount -->
+<button @click="createUserAccount = true; showProfile = false; createUserProfile = false; showAccount = false; ">Create User Account</button>
+<button @click="showAccount = true; createUserAccount = false; showProfile = false; createUserProfile = false; ">View User Account</button>
 </div>
-  <div v-if="showCreateRole">
-    <form @submit.prevent="createRole">
+
+
+  <div v-if="createUserProfile">
+    <form @submit.prevent="createProfile">
     <label for="profile">User Profile:</label>
     <input type="text" id="profile" v-model="formData.profile" required class="form-control"/>
     <button type="submit">Create User Profile</button>
   </form>
 </div>
-
 <div v-if="showProfile">
   <form @submit.prevent="searchRole">
     <input type="text" id="users" v-model="formData.profile" class="form-control" placeholder="Search Profile"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Submit</button>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
   <form @submit.prevent>
   <ul>
@@ -40,16 +42,16 @@
       <input type="radio" v-model="selectedProfile" :value="role" />
       {{ role.profile }}
     </li>
-      <button type="submit" @click.self="suspendProfile">Suspend User</button>
-      <button type="submit">Delete Selected Role</button>
+      <button type="submit">Delete Profile</button>
   </ul>
   </form>
   </div>
 
-<div v-if="showUsers">
-  <form @submit.prevent="searchUser">
+
+<div v-if="showAccount">
+  <form @submit.prevent="searchAccount">
     <input type="text" id="users" v-model="userForm.user" class="form-control" placeholder="Search Users"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Submit</button>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
   <form @submit.prevent>
   <ul>
@@ -57,29 +59,11 @@
       <input type="radio" v-model="selectedUsers" :value="user" />
       {{ user.username }}
     </li>
-      <button type="submit" @click.self="deleteUser">Delete Selected User</button>
-      <button type="submit" @click.self="editUser">Edit User</button>
+    <button type="submit" @click.self="editUser">Edit User</button>  
+    <button type="submit" @click.self="deleteUser">Delete User</button>
   </ul>
   </form>
   </div>
-  </div>
-
-<div v-if="showUsers">
-  <form @submit.prevent="searchUser">
-    <input type="text" id="users" v-model="userForm.user" class="form-control" placeholder="Search Users"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Submit</button>
-  </form>
-  <form @submit.prevent>
-  <ul>
-    <li v-for="user in users" :key="user.username">
-      <input type="radio" v-model="selectedUsers" :value="user" />
-      {{ user.username }}
-    </li>
-      <button type="submit" @click.self="deleteUser">Delete Selected User</button>
-      <button type="submit" @click.self="suspendUser">Suspend User</button>
-      <button type="submit" @click.self="editUser">Edit User</button>
-  </ul>
-  </form>
   </div>
   
   
@@ -107,10 +91,11 @@
 export default {
 data() {
   return {
-    showCreateRole: false,
-    showRoles: false,
+    createUserProfile: false,
     showProfile: false,
-    showUsers: false,
+    createUserAccount: false,
+    showAccount: false,
+    
     formData: {
       profile: "",
     },
@@ -120,15 +105,7 @@ data() {
   };
 },
 methods: {
-
-  async onClickDisabled() {
-    this.showCreateRole = false;
-    this.showRoles = false;
-    this.showProfile = false;
-    this.showUsers = false;
-  },
-
-  async createRole() {
+  async createProfile() {
     const createP = await $fetch("/api/controller/sysadmin/createProfile", {
       method: "POST",
       headers: {
