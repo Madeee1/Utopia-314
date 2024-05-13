@@ -14,18 +14,18 @@
 <h2 class="text-2xl font-bold">Admin Dashboard</h2>
 <p>Welcome to the Admin Dashboard. Here you can manage User Profile and User Accounts.</p>
 <button @click="onClickDisabled(); showCreateRole = true;">Create User Profile</button>
-<button @click="onClickDisabled(); showRoles = true; getRoles(); ">View User Profile</button>
-<button @click="onClickDisabled(); showUsers = true; getUsers(); ">View Users</button>
+<button @click="onClickDisabled(); showProfile = true; getProfile(); ">View User Profile</button>
+
 <br>
-<button @click="onClickDisabled(); showCreateRole = true;">Create Role</button>
-<button @click="onClickDisabled(); showRoles = true; getRoles(); ">View Roles</button>
-<button @click="onClickDisabled(); showUsers = true; getUsers(); ">View Users</button>
+<button @click="onClickDisabled(); showCreateRole = true;">Create User Account</button>
+<button @click="onClickDisabled(); showRoles = true; getProfile(); ">View User Account</button>
+
 </div>
   <div v-if="showCreateRole">
     <form @submit.prevent="createRole">
-    <label for="profile">Role:</label>
+    <label for="profile">User Profile:</label>
     <input type="text" id="profile" v-model="formData.profile" required class="form-control"/>
-    <button type="submit">Create Role</button>
+    <button type="submit">Create User Profile</button>
   </form>
 </div>
 
@@ -81,7 +81,7 @@
   </ul>
   </form>
   </div>
-  </div>
+  
   
   <div v-if="searchUserAccount">
       <input
@@ -242,8 +242,6 @@ methods: {
       }
     this.profile = users;
   },
-},
-
   async editUser() {
     const suspendU = await $fetch("/api/controller/sysadmin/editUser", {
       method: "POST",
@@ -253,7 +251,6 @@ methods: {
       body: JSON.stringify(this.selectedUsers),
     });
   },
-
   async suspendProfile() {
     const suspendU = await $fetch("/api/controller/sysadmin/suspendProfile", {
       method: "POST",
@@ -269,14 +266,12 @@ methods: {
     } 
   },
 },
+async created() {
+    await this.getProfile();
+    await this.getUsers();
+  },
+}
 
-
-
-created() {
-  this.getProfile();
-  this.getUsers();
-},
-};
 </script>
 
 <style scoped>
