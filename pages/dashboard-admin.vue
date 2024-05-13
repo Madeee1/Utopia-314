@@ -13,15 +13,15 @@
 
 <main class="p-4">
   <h2 class="text-2xl font-bold">Admin Dashboard</h2>
-  <p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
-  <button @click="showCreateRole = true; searchUserProfile = false; searchUserAccount = false">Create Role</button>
+  <p>Welcome to the Admin Dashboard. Here you can manage User Profile and Permissions.</p>
+  <button @click="showCreateRole = true; searchUserProfile = false; searchUserAccount = false">Create User Profile</button>
   <button @click="searchUserProfile = true; showCreateRole = false; searchUserAccount = false">Search User Profile</button>
   <button @click="searchUserAccount = true; showCreateRole = false; searchUserProfile = false">Search User Account</button>
-  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; getRoles()">View Roles</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; getUserProfile()">View User Profile</button>
   <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; viewUserAccount()">View User Account</button> 
   <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; editUserAccount()">Edit User Account</button>
   <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; suspendAccount()">Suspend User Account</button>
-  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; deleteRoles()">Delete Selected Roles</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; deleteRoles()">Delete Selected Profile</button>
   <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; deleteUserAccount()">Delete User Account</button>
   
 </main>
@@ -88,7 +88,7 @@ export default {
     };
   },
   methods: {
-    async getRoles() {
+    async getUserProfile() {
       const response = await this.$fetch("/api/controller/"); //add controller
       this.userRole = response.value;
     },
@@ -112,7 +112,7 @@ export default {
     },
   },
   created() {
-    this.getRoles();
+    this.getUserProfile();
   },
   async suspendAccount(){
     try{
