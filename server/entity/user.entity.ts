@@ -155,4 +155,48 @@ export class userEntity {
       return { ok: false, message: error.message };
     }
   }
+
+  async viewUser(event:any, body: UserDto) {
+    const response = await userSchema.find({}, {username:1, _id:0});
+    
+    return {
+      users: response,
+    };
+  }
+
+  async deleteUser(event: any, body: UserDto) {
+    // Create profile in the database
+    // Return the created profile
+    try {
+      const response = await userSchema.deleteOne({
+        username: body.username,
+      });
+      return "User deleted successfully!";
+    } catch (error: any) {
+      throw createError({
+        statusCode: 400,
+        message: error.message,
+      });
+    }
+  }
+
+  async searchUser(event:any, body: UserDto) {
+    const users = await userSchema.find({username:body.username}, {username:1, _id:0});
+    
+    return {
+      users: users,
+    };
+  }
+
+  async suspendUser(event: any, body: any) {
+    const users = await userSchema.updateOne({username: body.username}, {"$set":{suspended: true}});
+
+    return { ok: true, users };
+  }
+
+  async editUser(event: any, body: any) {
+    const users = await userSchema.find({username:body.username}, {username:1, _id:0});
+
+    return { ok: true, users };
+  }
 }
