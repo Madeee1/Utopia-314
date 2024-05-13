@@ -91,6 +91,14 @@ export class Listing {
     }
   }
 
+  async viewListing(body: any) {
+    const listings = await listingSchema.find({}, {name:1, _id:0});
+    
+    return {
+      listings: listings,
+    };
+  }
+
   async calculateMortgage(body: any) {  
 
   }

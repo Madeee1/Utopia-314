@@ -13,9 +13,9 @@
 <div class="center">
   <h2 class="text-2xl font-bold">Buyer Dashboard</h2>
   <p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
-  <button @click="onClickDisabled(); showCreateRole = true;">View Listings</button>
+  <button @click="onClickDisabled(); Listings = true; showListings();">View Listings</button>
   <button @click="onClickDisabled(); calculateMortgage = true">Calculate Mortgage</button>
-  <button @click="onClickDisabled(); showUsers = true">Favourites</button>
+  <button @click="onClickDisabled(); showFavourites = true">Favourites</button>
 </div>
 
     <div v-if="calculateMortgage" class="center">
@@ -23,6 +23,15 @@
         <input type="number" id="loanAmount" v-model="loanAmount" class="form-control" />
         <button type="submit" class="btn btn-primary" @click="calculate">Calculate</button>
     </div>
+
+    <div v-if="Listings">
+    <ul>
+      <li v-for="listing in listings" :key="listing.name">
+        {{ listing }}
+      </li>
+    </ul>
+    </div>
+    
     </div>
 </template>
 
@@ -36,6 +45,19 @@ export default {
   methods: {
     async onClickDisabled() {
       this.calculateMortgage = false;
+      this.Listings = false;
+    },
+
+    async showListings() {
+      const showL = await $fetch("/api/controller/user/buyer/showListings", {
+        method: "POST",
+      }); //add controller
+      const listings = [];
+        for (let i = 0; i < showL.listings.length; i++) {
+            const dictionary = {"name": showL.listings[i]};
+            listings.push(dictionary);
+        }
+      this.listings = listings;
     },
 
     async calculate(){
@@ -46,7 +68,13 @@ export default {
             alert("Your monthly payment is: " + monthlyPayment);
             console.log("Your monthly payment is: " + monthlyPayment);
         },
+        
+    async showFavourites(){
+    
+    }
   },
+
+  
 };
 </script>
 
