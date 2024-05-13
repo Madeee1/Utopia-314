@@ -126,7 +126,6 @@ export class userEntity {
     }
   }
 
-
   async addSellerReview(body: any) {
     const { sellerId, review } = body;
 
@@ -156,6 +155,23 @@ export class userEntity {
     }
   }
 
+  // from Agent to GET reviews
+  async getReviews(userIdQuery: any) {
+    try {
+      const response = await userSchema.find({ id: userIdQuery });
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
 
-
+  // from Agent to GET ratings
+  async getRatings(userIdQuery: any) {
+    try {
+      const response = await userSchema.find({ id: userIdQuery });
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
 }
