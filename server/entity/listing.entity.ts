@@ -90,4 +90,8 @@ export class Listing {
       return { value: false, ok: false, error: error.message };
     }
   }
+
+  async calculateMortgage(body: any) {  
+
+  }
 }

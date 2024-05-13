@@ -84,7 +84,7 @@ export class userEntity {
     // Create profile in the database
     // Return the created profile
     try {
-      const response = await userSchema.deleteMany({
+      const response = await userSchema.deleteOne({
         username: body.username,
       });
       return "User deleted successfully!";
@@ -96,22 +96,18 @@ export class userEntity {
     }
   }
 
+  async searchUser(event:any, body: UserDto) {
+    const users = await userSchema.find({username:body.username}, {username:1, _id:0});
+    
+    return {
+      users: users,
+    };
+  }
+
   async suspendUser(event: any, body: any) {
-    const { username } = body;
-    // add a column to the user schema to indicate if the user is suspended
-    // find the user in the database
-    // update the user's suspended column to true
-    // return the updated user
-    try {
-      const response = await userSchema.findOneAndUpdate(
-        { username },
-        { suspended: true },
-        { new: true }
-      );
-      return { ok: true, response };
-    }catch (error: any) {
-        return { ok: false, message: error.message };
-      }
+    const user = await userSchema.updateOne({username: body.username}, {"$set":{suspended: true}});
+
+    return { ok: true, user };
   }
 
   // Update AGENT profile is here

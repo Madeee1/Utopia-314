@@ -27,13 +27,13 @@
 
   <div v-if="showRoles">
     <form @submit.prevent="searchRoles">
-      <input type="text" id="users" v-model="search" class="form-control" placeholder="Search Roles"/>
+      <input type="text" id="users" v-model="formData.profile" class="form-control" placeholder="Search Roles"/>
       <button type="submit" style="padding:2px 4px; border-radius: 6px;">Submit</button>
     </form>
     <form @submit.prevent="deleteRole">
     <ul>
       <li v-for="role in roles" :key="role.profile">
-        <input type="checkbox" v-model="selectedRoles" :value="role.profile" />
+        <input type="radio" v-model="selectedRoles" :value="role" />
         {{ role.profile }}
       </li>
     </ul>
@@ -43,18 +43,18 @@
 
   <div v-if="showUsers">
     <form @submit.prevent="searchUser">
-      <input type="text" id="users" v-model="search" class="form-control" placeholder="Search Users"/>
+      <input type="text" id="users" v-model="userForm.user" class="form-control" placeholder="Search Users"/>
       <button type="submit" style="padding:2px 4px; border-radius: 6px;">Submit</button>
     </form>
     <form @submit.prevent>
     <ul>
       <li v-for="user in users" :key="user.username">
-        <input type="radio" v-model="selectedUsers" :value="user.username" />
+        <input type="radio" v-model="selectedUsers" :value="user" />
         {{ user.username }}
       </li>
         <button type="submit" @click.self="deleteUser">Delete Selected User</button>
         <button type="submit" @click.self="suspendUser">Suspend User</button>
-        <button type="submit" @click.self="$router.push('/editUserB')">Edit User</button>
+        <button type="submit" @click.self="editUser">Edit User</button>
     </ul>
     </form>
     </div>
@@ -68,10 +68,12 @@ export default {
       showCreateRole: false,
       showRoles: false,
       showUsers: false,
-      selectedUsers: [""],
       formData: {
         profile: "",
-      }
+      },
+      userForm: {
+        user: "",
+      },
     };
   },
   methods: {
@@ -83,6 +85,7 @@ export default {
     },
 
     async createRole() {
+      console.log(this.formData)
       const createP = await $fetch("/api/controller/createProfile", {
         method: "POST",
         headers: {
@@ -132,7 +135,10 @@ export default {
         });
 
         if (response !== "Profile deleted successfully!") {
+          alert("Profile not deleted!");
           throw new Error('Failed to delete roles');
+        }else{
+          alert("Profile deleted successfully!");
         }
         this.selectedRoles = [];
       } catch (error) {
@@ -141,20 +147,67 @@ export default {
     },
 
     async deleteUser() {
-      console.log(this.selectedUsers)
-      const deleteU = await $fetch("/api/controller/deleteUser", {
+      try {
+        const response = await $fetch("/api/controller/deleteUser", { //add controller
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.selectedUsers),
+        });
+
+        if (response !== "User deleted successfully!") {
+          alert("User not deleted!");
+          throw new Error('Failed to delete users');
+        }else{
+          alert("User deleted successfully!");
+        }
+        this.selectedUsers = [];
+      } catch (error) {
+        console.error('Failed to delete users:', error.message);
+      }
+    },
+
+    async searchRoles() {
+      const searchP = await $fetch("/api/controller/searchProfile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.formData),
+      }); //add controller
+      const profiles = [];
+        for (let i = 0; i < searchP.profiles.length; i++) {
+            const dictionary = {"profile": searchP.profiles[i].profile};
+            profiles.push(dictionary);
+        }
+      this.roles = profiles;
+    },
+
+    async searchUser() {
+      const searchU = await $fetch("/api/controller/searchUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.userForm),
+      }); //add controller
+      const users = [];
+        for (let i = 0; i < searchU.users.length; i++) {
+            const dictionary = {"username": searchU.users[i].username};
+            users.push(dictionary);
+        }
+      this.roles = users;
+    },
+
+    async editUser() {
+      const suspendU = await $fetch("/api/controller/editUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(this.selectedUsers),
-        
       });
-      if (deleteU === "User deleted successfully!"){
-          alert("User deleted successfully!");
-      } else {
-          alert("User not deleted!");
-      } 
     },
 
     async suspendUser() {
@@ -165,7 +218,7 @@ export default {
         },
         body: JSON.stringify(this.selectedUsers),
       });
-      if (suspendU === "User suspended successfully!"){
+      if (suspendU.ok){
           alert("User suspended successfully!");
       } else {
           alert("User not suspended!");

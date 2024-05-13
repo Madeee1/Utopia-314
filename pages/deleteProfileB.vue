@@ -27,7 +27,6 @@
 <script>
 export default {
   data() {
-    const model = defineModel('asd');
     return {
       profileData: {
         profile: "",
@@ -36,12 +35,13 @@ export default {
   },
   methods: {
     async deleteProfile() {
+      console.log(this.deleteprofile)
       const deleteP = await $fetch("/api/controller/deleteProfile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(this.model),
+        body: JSON.stringify(this.deleteprofile),
       });
       if (deleteP === "Profile deleted successfully!"){
           alert("Profile deleted successfully!");

@@ -32,6 +32,14 @@ export class profileEntity {
       };
     }
 
+    async searchP(event:any, body: profileDto) {
+      const profiles = await profileSchema.find({profile:body.profile}, {profile:1, _id:0});
+      
+      return {
+        profiles: profiles,
+      };
+    }
+
     async deleteP(event: any, body: profileDto) {
       // Create profile in the database
       // Return the created profile
