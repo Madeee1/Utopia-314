@@ -1,22 +1,26 @@
 <template>
-    <div class="font-sans bg-gray-50">
-    <header class="bg-gray-100 p-4 text-center shadow">
+  <div class="font-sans bg-gray-50">
+    <header class="bg-gray-100 p-4 text-center shadow relative">
+      <LogOutButton class="absolute top-2 right-4" />
       <h1 class="text-xl font-bold">Admin Page</h1>
-</header>
+    </header>
 
- <nav class="bg-gray-800 text-white p-3 text-center">
+    <nav class="bg-gray-800 text-white p-3 text-center">
       <a href="#" class="mx-4 no-underline hover:text-gray-300">Home</a>
       <a href="#" class="mx-4 no-underline hover:text-gray-300">Properties</a>
       <a href="#" class="mx-4 no-underline hover:text-gray-300">Contact Us</a>
-</nav>
+    </nav>
 
-<main class="p-4">
-  <h2 class="text-2xl font-bold">Admin Dashboard</h2>
-  <p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
-  <button @click="showCreateRole = true">Create Role</button>
-  <button @click="getRoles">View Roles</button>
-  <button @click="deleteRoles">Delete Selected Roles</button>
-</main>
+    <main class="p-4">
+      <h2 class="text-2xl font-bold">Admin Dashboard</h2>
+      <p>
+        Welcome to the Admin Dashboard. Here you can manage roles and
+        permissions.
+      </p>
+      <button @click="showCreateRole = true">Create Role</button>
+      <button @click="getRoles">View Roles</button>
+      <button @click="deleteRoles">Delete Selected Roles</button>
+    </main>
     <div v-if="showCreateRole">
       <label for="role">Role:</label>
       <input
@@ -39,13 +43,15 @@
 </template>
 
 <script>
+import LogOutButton from "~/components/LogOutButton.vue";
+
 export default {
   data() {
     return {
       showCreateRole: false,
       formData: {
         role: "",
-      }
+      },
     };
   },
   methods: {
@@ -55,7 +61,8 @@ export default {
     },
     async deleteRoles() {
       try {
-        const response = await this.$fetch("/api/controller/", { //add controller
+        const response = await this.$fetch("/api/controller/", {
+          //add controller
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -64,11 +71,11 @@ export default {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to delete roles');
+          throw new Error("Failed to delete roles");
         }
         this.selectedRoles = [];
       } catch (error) {
-        console.error('Failed to delete roles:', error.message);
+        console.error("Failed to delete roles:", error.message);
       }
     },
   },
@@ -109,5 +116,3 @@ button:hover {
   background-color: #45a049;
 }
 </style>
-
-
