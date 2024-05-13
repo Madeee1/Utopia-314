@@ -1,9 +1,10 @@
 <template>
     <div class="font-sans bg-gray-50">
     <header class="bg-gray-100 p-4 text-center shadow">
-      <h1 class="text-xl font-bold">Admin Page</h1>
+    <h1 class="text-xl font-bold">Admin Page</h1>
+    
 </header>
-
+</div>
  <nav class="bg-gray-800 text-white p-3 text-center">
       <a href="#" class="mx-4 no-underline hover:text-gray-300">Home</a>
       <a href="#" class="mx-4 no-underline hover:text-gray-300">Properties</a>
@@ -13,13 +14,15 @@
 <main class="p-4">
   <h2 class="text-2xl font-bold">Admin Dashboard</h2>
   <p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
-  <button @click="showCreateRole = true; searchUserProfile = false">Create Role</button>
-  <button @click="searchUserProfile = true; showCreateRole = false">Search User Profile</button>
-  <button @click="showCreateRole = false; searchUserProfile = false; getRoles()">View Roles</button>
-  <button @click="showCreateRole = false; searchUserProfile = false; viewUserAccount()">View User Account</button> 
-  <button @click="showCreateRole = false; searchUserProfile = false; editUserAccount()">Edit User Account</button>
-  <button @click="showCreateRole = false; searchUserProfile = false; suspendAccount()">Suspend User Account</button>
-  <button @click="showCreateRole = false; searchUserProfile = false; deleteRoles()">Delete Selected Roles</button>
+  <button @click="showCreateRole = true; searchUserProfile = false; searchUserAccount = false">Create Role</button>
+  <button @click="searchUserProfile = true; showCreateRole = false; searchUserAccount = false">Search User Profile</button>
+  <button @click="searchUserAccount = true; showCreateRole = false; searchUserProfile = false">Search User Account</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; getRoles()">View Roles</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; viewUserAccount()">View User Account</button> 
+  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; editUserAccount()">Edit User Account</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; suspendAccount()">Suspend User Account</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; deleteRoles()">Delete Selected Roles</button>
+  <button @click="showCreateRole = false; searchUserProfile = false; searchUserAccount = false; deleteUserAccount()">Delete User Account</button>
   
 </main>
     <div v-if="showCreateRole">
@@ -33,6 +36,7 @@
       />
       <button @click="createRole">Submit Role</button>
     </div>
+    
     <div v-if="searchUserProfile">
       <input
       type="text"
@@ -42,7 +46,7 @@
     />
     <button @click="searchUserProfile">Search User Profile</button>
     </div>
-
+    <div>
     <ul>
       <li v-for="role in roles" :key="role.id">
         <input type="checkbox" v-model="selectedRoles" :value="role" />
@@ -50,6 +54,25 @@
       </li>
     </ul>
   </div>
+  
+  <div v-if="searchUserAccount">
+      <input
+      type="text"
+      v-model="searchQuery"
+      class="input"
+      placeholder="Search User Account"
+    />
+    <button @click="searchUserAccount">Search User Account</button>
+  </div>
+  <div>
+    <ul>
+      <li v-for="account in accounts" :key="account.id">
+        <input type="checkbox" v-model="selectedAccount" :value="account" />
+        {{ account.name }}
+      </li>
+    </ul>
+  </div>
+
 </template>
 
 <script>
@@ -58,6 +81,7 @@ export default {
     return {
       showCreateRole: false,
       searchUserProfile: false,
+      searchUserAccount: false,
       formData: {
         role: "",
       }
@@ -121,6 +145,24 @@ export default {
   async editUserAccount(){
     const response = await this.$fetch("/api/controller/"); //add controller
     this.userAccount = response.value;
+  },
+  async deleteUserAccount(){
+    try {
+        const response = await this.$fetch("/api/controller/", { //add controller
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.selectedUserAccount),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete user account');
+        }
+        this.selectedUserAccount = [];
+      } catch (error) {
+        console.error('Failed to delete user account:', error.message);
+      }
   },
 
 };
