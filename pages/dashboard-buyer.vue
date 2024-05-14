@@ -40,7 +40,7 @@
 
     <div v-if="oldListings">
       <form @submit.prevent="searchOldListings"> 
-    <input type="text" id="oldlistings" v-model="oldListingSearch.name" class="form-control" placeholder="Search Old Listings"/>
+    <input type="text" id="oldlistings" v-model="oldListingsSearch.name" class="form-control" placeholder="Search Old Listings"/>
     <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
     <ul>
