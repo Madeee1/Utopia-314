@@ -39,7 +39,7 @@
   <form @submit.prevent>
   <ul>
     <li v-for="profile in profiles" :key="profile.profiles">
-      <input type="radio" v-model="selectedProfile" :value="profile" name="profile"/>
+      <input type="checkbox" v-model="selectedProfile" :value="profile" name="profile"/>
       {{ profile.profile }}
     </li>
       <button type="submit" @click.self="deleteProfile">Delete Profile</button>
@@ -107,7 +107,7 @@
       <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
       {{ user.username }}
     </li>
-    <button type="submit" @click.self="editUser" >Edit User</button>  
+    <button type="submit" @click.self="editUser();">Edit User</button>  
     <button type="submit" @click.self="deleteUser">Delete User</button>
   </ul>
   </form>
@@ -205,7 +205,7 @@ methods: {
   async deleteProfile() {
     try {
       const response = await $fetch("/api/controller/sysadmin/deleteProfile", { //add controller
-        method: "POST",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
