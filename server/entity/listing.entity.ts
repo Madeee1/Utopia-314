@@ -126,6 +126,5 @@ export class Listing {
   async calculateMortgage(body: any) {  
 
   }
-
   
 }

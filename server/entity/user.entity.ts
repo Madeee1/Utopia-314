@@ -141,6 +141,20 @@ export class userEntity {
     }
   }
 
+  async baddAgentReview(body: any) {
+    const { agentId, review } = body;
+
+    try {
+      const response = await userSchema.findOneAndUpdate(
+        { id: agentId },
+        { $push: { reviews: review } }
+      );
+      return { ok: true, value: response };
+    } catch (error: any) {
+      return { ok: false, message: error.message };
+    }
+  }
+
   // POST to add to agent rating
   async addAgentRating(body: any) {
     const { agentId, rating } = body;
@@ -158,6 +172,14 @@ export class userEntity {
 
   async viewUser(event:any, body: UserDto) {
     const response = await userSchema.find({}, {username:1, _id:0});
+    
+    return {
+      users: response,
+    };
+  }
+
+  async viewAgents(event:any, body: UserDto) {
+    const response = await userSchema.find({role: "agent"}, {username:1, _id:0});
     
     return {
       users: response,

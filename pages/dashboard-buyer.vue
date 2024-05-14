@@ -17,11 +17,12 @@
   <button @click="onClickDisabled(); oldListings = true; showOldListings();">View Old Listings</button>
   <button @click="onClickDisabled(); calculateMortgage = true">Calculate Mortgage</button>
   <button @click="onClickDisabled(); showFavourites = true">Favourites</button>
+  <button @click="onClickDisabled(); showAgents = true; viewAgents()">Review Agents</button>
 </div>
 
     <div v-if="calculateMortgage" class="center">
-        <label for="loanAmount" class="form-label">Loan Amount</label>
-        <input type="number" id="loanAmount" v-model="loanAmount" class="form-control" />
+        <label for="calculateMortgage" class="form-label">Name of property: </label>
+        <input type="text" id="calculateMortgage" v-model="calculateMortgage.name" class="form-control" />
         <button type="submit" class="btn btn-primary" @click="calculate">Calculate</button>
     </div>
 
@@ -48,6 +49,22 @@
       </li>
     </ul>
     </div>
+
+    <div v-if="showAgents">
+      
+
+    <form @submit.prevent>
+    <ul>
+      <li v-for="user in agents" :key="user.username">
+      <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
+      {{ user.username }}
+      </li>
+        <button type="submit" @click.self="reviewAgent" >Review Agent</button>  
+        <button type="submit" @click.self="rateAgent">Rate Agent</button>
+    </ul>
+  </form>
+
+    </div>
     
     </div>
 </template>
@@ -58,10 +75,13 @@ export default {
     return {
       calculateMortgage: false,
       listingSearch: {
-        name :"",
+        name : "",
       },
       oldListingsSearch: {
-        name :"",
+        name : "",
+      },
+      calculateMortgage:{
+        name : "",
       }
     };
   },
@@ -98,7 +118,7 @@ export default {
 
     async searchListings() {
     try{
-      const searchL = await $fetch("/api/controller/sysadmin/searchListings", {
+      const searchL = await $fetch("/api/controller/user/buyer/searchListings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +144,7 @@ export default {
 
  async searchOldListings() {
     try{
-      const searchO = await $fetch("/api/controller/sysadmin/searchOldListings", {
+      const searchO = await $fetch("/api/controller/user/buyer/searchOldListings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -159,12 +179,58 @@ export default {
         
     async showFavourites(){
     
-    }
+    },
+
+    async viewAgents() {
+    const viewAgents = await $fetch("/api/controller/user/buyer/viewAgents", {
+      method: "POST",
+    }); //add controller
+    const agents = [];
+      for (let i = 0; i < viewAgents.users.length; i++) {
+          const dictionary = {"username": viewAgents.users[i].username};
+          agents.push(dictionary);
+      }
+    this.agents = agents;
+    },
+
+    async reviewAgent(){
+      try{
+      const reviewAgents = await $fetch("/api/controller/user/buyer/reviewAgent", {
+      method: "POST",
+    });
+        if (reviewAgents.ok) {
+          alert("Agent reviewed successfully!");
+        } else {
+          alert("Error. Please try again.");
+        }
+      } catch (error) {
+        console.error('Failed to leave a review:', error.message);
+      }
+    },
+
+    async rateAgent(){
+      try{
+      const rateAgents = await $fetch("/api/controller/user/buyer/rateAgent", {
+      method: "POST",
+    });
+        if (rateAgents.ok) {
+          alert("Agent rated successfully!");
+        } else {
+          alert("Error. Please try again.");
+        }
+      } catch (error) {
+        console.error('Failed to leave a rating:', error.message);
+      }
+    },
   },
+   
+
+
   created(){
       this.showListings();
+      this.showOldListings();
+      this.viewAgents();
   }
-  
 };
 </script>
 
