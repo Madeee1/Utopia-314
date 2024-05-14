@@ -42,11 +42,6 @@ export const userSchema = defineMongooseModel({
       type: [Number],
       required: false,
     },
-    suspended: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   hooks(schema) {
     // Add a pre-save hook to hash the password

@@ -112,26 +112,8 @@
   </ul>
   </form>
   </div>
-  </div>
   
-  <div v-if="searchUserAccount">
-      <input
-      type="text"
-      v-model="searchQuery"
-      class="input"
-      placeholder="Search User Account"
-    />
-    <button @click="searchUserAccount">Search User Account</button>
   </div>
-  <div>
-    <ul>
-      <li v-for="account in accounts" :key="account.id">
-        <input type="checkbox" v-model="selectedAccount" :value="account" />
-        {{ account.name }}
-      </li>
-    </ul>
-  </div>
-
 </template>
 
 <script>
