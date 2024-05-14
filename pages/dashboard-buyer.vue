@@ -184,6 +184,10 @@ export default {
     async viewAgents() {
     const viewAgents = await $fetch("/api/controller/user/buyer/viewAgents", {
       method: "POST",
+      headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.selectedUsers),
     }); //add controller
     const agents = [];
       for (let i = 0; i < viewAgents.users.length; i++) {
@@ -197,6 +201,10 @@ export default {
       try{
       const reviewAgents = await $fetch("/api/controller/user/buyer/reviewAgent", {
       method: "POST",
+      headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.selectedUsers),
     });
         if (reviewAgents.ok) {
           alert("Agent reviewed successfully!");
