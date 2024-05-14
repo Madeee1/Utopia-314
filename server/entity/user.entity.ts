@@ -171,19 +171,45 @@ export class userEntity {
   }
 
   async viewUser(event:any, body: UserDto) {
-    const response = await userSchema.find({}, {username:1, _id:0});
+    try{
+    const response = await userSchema.find({}, {
+      username:1, _id:0
+    });
     
     return {
+      ok: true,
       users: response,
     };
+    }catch(error: any){
+      return { 
+        value: false, 
+        ok: false, 
+        error: error.message 
+      };
+      }
   }
 
   async viewAgents(event:any, body: UserDto) {
-    const response = await userSchema.find({role: "agent"}, {username:1, _id:0});
+    try{
+    const response = await userSchema.find(
+      {
+        role: "agent"
+      }, 
+      {
+        username:1, _id:0
+      });
     
     return {
+      ok: true,
       users: response,
     };
+    }catch(error: any){
+      return { 
+        value: false, 
+        ok: false, 
+        error: error.message 
+      };
+      }
   }
 
   async createUser(event: any, body: UserDto) {
@@ -213,25 +239,58 @@ export class userEntity {
         username: body.username,
       });
       return "User deleted successfully!";
-    } catch (error: any) {
-      throw createError({
-        statusCode: 400,
-        message: error.message,
-      });
-    }
+    } catch(error: any){
+      return { 
+        value: false, 
+        ok: false, 
+        error: error.message 
+      };
+      }
   }
 
   async searchUser(event:any, body: UserDto) {
-    const users = await userSchema.find({username:body.username}, {username:1, _id:0});
+    try{
+    const users = await userSchema.find(
+      {
+        username:body.username
+      },
+      {
+        username:1, _id:0
+      });
     
     return {
+      ok : true,
       users: users,
     };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
   }
 
   async editUser(event: any, body: any) {
-    const users = await userSchema.find({username:body.username}, {username:1, _id:0});
+    try{
+    const users = await userSchema.find(
+      {
+        username:body.username
+      },
+      {
+        username:1, _id:0
+      });
 
-    return { ok: true, users };
+    return { 
+      ok: true, 
+      users : users 
+    };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
   }
 }

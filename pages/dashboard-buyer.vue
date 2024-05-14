@@ -15,6 +15,7 @@
   <p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
   <button @click="onClickDisabled(); Listings = true; showListings();">View Listings</button>
   <button @click="onClickDisabled(); oldListings = true; showOldListings();">View Old Listings</button>
+  <button @click="onClickDisabled(); testListingsUI = true; testListings(); ">View All Listings for UI testing</button>
   <button @click="onClickDisabled(); calculateMortgage = true">Calculate Mortgage</button>
   <button @click="onClickDisabled(); showFavourites = true">Favourites</button>
   <button @click="onClickDisabled(); showAgents = true; viewAgents()">Review Agents</button>
@@ -24,6 +25,18 @@
         <label for="calculateMortgage" class="form-label">Name of property: </label>
         <input type="text" id="calculateMortgage" v-model="calculateMortgage.name" class="form-control" />
         <button type="submit" class="btn btn-primary" @click="calculate">Calculate</button>
+    </div>
+
+    <div v-if="testListingsUI">
+      <form @submit.prevent="searchListings"> 
+    <input type="text" id="listings" v-model="testSearch.name" class="form-control" placeholder="Search Listings"/>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
+  </form>
+    <ul>
+      <li v-for="listing in listings" :key="listing">
+        {{ listing }}
+      </li>
+    </ul>
     </div>
 
     <div v-if="Listings">
@@ -82,13 +95,31 @@ export default {
       },
       calculateMortgage:{
         name : "",
-      }
+      },
+      testSearch: {
+        name : "",
+      },
     };
   },
   methods: {
     async onClickDisabled() {
       this.calculateMortgage = false;
       this.Listings = false;
+      this.oldListings = false;
+      this.testListingsUI = false;
+    },
+
+    async testListings() {
+      const test = await $fetch("/api/controller/user/buyer/testListings", {
+        method: "POST",
+      }); //add controller
+      console.log(test.listings[0])
+      const listings = [];
+        for (let i = 0; i < test.listings.length; i++) {
+            const dictionary = {"name": test.listings[i]};
+            listings.push(dictionary);
+        }
+      this.listings = listings;
     },
 
     async showListings() {
@@ -235,8 +266,7 @@ export default {
 
 
   created(){
-      this.showListings();
-      this.showOldListings();
+      this.testListings();
       this.viewAgents();
   }
 };

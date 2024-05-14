@@ -92,39 +92,103 @@ export class Listing {
   }
 
   async viewListing(body: any) {
-    const listings = await listingSchema.find({status: "On Sale"});
+    try{
+    const listings = await listingSchema.find({
+      status: "On Sale"
+    });
     
     return {
+      ok: true,
       listings: listings,
     };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
   }
 
   async viewOldListing(body: any) {
-    const listings = await listingSchema.find({status: "Sold"});
+    try{
+    const listings = await listingSchema.find({
+      status: "Sold"
+    });
     
     return {
+      ok: true,
       listings: listings,
     };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
   }
 
   async searchListing(body: any) {
-    const listings = await listingSchema.find({name:body.name, status: "On Sale"});
+    try{
+    const listings = await listingSchema.find({
+      name:body.name, 
+      status: "On Sale"
+    });
     
     return {
+      ok: true,
       listings: listings,
     };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
   }
 
   async searchOldListing(body: any) {
-    const listings = await listingSchema.find({name:body.name, status: "Sold"});
+    try{
+    const listings = await listingSchema.find({
+      name:body.name, 
+      status: "Sold"
+    });
     
     return {
+      ok: true,
       listings: listings,
     };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
   }
 
   async calculateMortgage(body: any) {  
 
+  }
+
+  // for testing
+  async allListings(body: any) {
+    try{
+    const listings = await listingSchema.find({});
+    
+    return {
+      ok: true,
+      listings: listings,
+    };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
   }
   
 }
