@@ -107,11 +107,7 @@
       <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
       {{ user.username }}
     </li>
-<<<<<<< HEAD
-    <button type="submit" @click.self="editUser();">Edit User</button>  
-=======
     <button type="submit" @click.self="editUser" >Edit User</button>  
->>>>>>> origin/testingbranch
     <button type="submit" @click.self="deleteUser">Delete User</button>
   </ul>
   </form>
