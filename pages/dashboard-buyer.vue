@@ -26,6 +26,10 @@
     </div>
 
     <div v-if="Listings">
+      <form @submit.prevent="searchListings"> 
+    <input type="text" id="listings" v-model="listingSearch.name" class="form-control" placeholder="Search Listings"/>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
+  </form>
     <ul>
       <li v-for="listing in listings" :key="listing">
         {{ listing }}
@@ -34,6 +38,10 @@
     </div>
 
     <div v-if="oldListings">
+      <form @submit.prevent="searchOldListings"> 
+    <input type="text" id="oldlistings" v-model="oldListingSearch.name" class="form-control" placeholder="Search Old Listings"/>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
+  </form>
     <ul>
       <li v-for="listing in oldlistings" :key="listing">
         {{ listing }}
@@ -49,6 +57,12 @@ export default {
   data() {
     return {
       calculateMortgage: false,
+      listingSearch: {
+        name :"",
+      },
+      oldListingsSearch: {
+        name :"",
+      }
     };
   },
   methods: {
@@ -71,7 +85,7 @@ export default {
     },
 
     async showOldListings() {
-      const showO = await $fetch("/api/controller/user/buyer/showListings", {
+      const showO = await $fetch("/api/controller/user/buyer/showOldListings", {
         method: "POST",
       }); //add controller
       const oldlistings = [];
@@ -81,6 +95,58 @@ export default {
         }
       this.oldlistings = oldlistings;
     },
+
+    async searchListings() {
+    try{
+      const searchL = await $fetch("/api/controller/sysadmin/searchListings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.listingSearch),
+      }); //add controller
+      const listings = [];
+        for (let i = 0; i < searchL.listings.length; i++) {
+            const dictionary = {"profile": searchL.listings[i].name};
+            listings.push(dictionary);
+            
+        }
+      this.listings = listings;
+      if (listings.length === 0){
+          alert("listings not found!");
+          this.showListings();
+      }
+      this.$forceUpdate();
+    } catch (error) {
+      console.error('Failed to search listings:', error.message);
+      }
+ },
+
+ async searchOldListings() {
+    try{
+      const searchO = await $fetch("/api/controller/sysadmin/searchOldListings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.listingSearch),
+      }); //add controller
+      const listings = [];
+        for (let i = 0; i < searchO.listings.length; i++) {
+            const dictionary = {"profile": searchO.listings[i].profile};
+            listings.push(dictionary);
+            
+        }
+      this.listings = listings;
+      if (listings.length === 0){
+          alert("listings not found!");
+          this.showListings();
+      }
+      this.$forceUpdate();
+    } catch (error) {
+      console.error('Failed to search listings:', error.message);
+      }
+ },
 
     async calculate(){
             let loanAmount = document.getElementById("loanAmount").value;

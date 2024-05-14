@@ -92,7 +92,31 @@ export class Listing {
   }
 
   async viewListing(body: any) {
-    const listings = await listingSchema.find();
+    const listings = await listingSchema.find({status: "On Sale"});
+    
+    return {
+      listings: listings,
+    };
+  }
+
+  async viewOldListing(body: any) {
+    const listings = await listingSchema.find({status: "Sold"});
+    
+    return {
+      listings: listings,
+    };
+  }
+
+  async searchListing(body: any) {
+    const listings = await listingSchema.find({name:body.name, status: "On Sale"});
+    
+    return {
+      listings: listings,
+    };
+  }
+
+  async searchOldListing(body: any) {
+    const listings = await listingSchema.find({name:body.name, status: "Sold"});
     
     return {
       listings: listings,
@@ -102,4 +126,6 @@ export class Listing {
   async calculateMortgage(body: any) {  
 
   }
+
+  
 }
