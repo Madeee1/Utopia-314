@@ -188,6 +188,24 @@ export class Listing {
     }
   }
 
+  async addFavourite(body: any) {
+    try{
+    const listings = await userSchema.find({
+      name:body.name, 
+    },);
+    return {
+      ok: true,
+      listings: listings,
+    };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
+  }
+
   // for testing
   async allListings(body: any) {
     try{
@@ -205,6 +223,7 @@ export class Listing {
     };
     }
   }
+
   async testSearch(body: any) {
     try{
     const listings = await listingSchema.find({

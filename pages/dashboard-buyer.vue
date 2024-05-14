@@ -36,6 +36,7 @@
       </li>
     </ul>
       <button type="submit" @click.self="calculate">Calculate Mortgage</button>
+      <button type="submit" @click.self="addFavourite">Add Favourite</button>
   </form>
     </div>
 
@@ -243,9 +244,28 @@ export default {
         },
         
         
-    async showFavourites(){
+    // async showFavourites(){
     
-    },
+    // },
+
+    // async addFavourite(){
+    //   try{
+    //   const addFav = await $fetch("/api/controller/user/buyer/addFavourite", {
+    //   method: "POST",
+    //   headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(this.selectedListing),
+    // });
+    //     if (addFav.ok) {
+    //       alert("Listing added to favourites!");
+    //     } else {
+    //       alert("Error. Please try again.");
+    //     }
+    //   } catch (error) {
+    //     console.error('Failed to add to favourites:', error.message);
+    //   }
+    // },
 
     async viewAgents() {
     const viewAgents = await $fetch("/api/controller/user/buyer/viewAgents", {
