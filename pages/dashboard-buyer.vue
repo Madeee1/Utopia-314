@@ -12,13 +12,30 @@
 
 <div class="center">
   <h2 class="text-2xl font-bold">Buyer Dashboard</h2>
-  <p>Welcome to the Admin Dashboard. Here you can manage roles and permissions.</p>
+  <p>Welcome to the Buyer Dashboard.</p>
   <button @click="onClickDisabled(); Listings = true; showListings();">View Listings</button>
   <button @click="onClickDisabled(); oldListings = true; showOldListings();">View Old Listings</button>
   <button @click="onClickDisabled(); testListingsUI = true; testListings(); ">View All Listings for UI testing</button>
   <button @click="onClickDisabled(); showFavourites = true">Favourites</button>
-  <button @click="onClickDisabled(); showAgents = true; viewAgents()">Review Agents</button>
-</div>
+  <button @click="showRatingForm = true; showReviewForm = false">Rate Agent</button>
+  <button @click="showReviewForm = true; showRatingForm = false">Review Agent</button>
+
+  <div v-if="showRatingForm" class="form-container">
+      <p>Select a rating:</p>
+      <div class="rating-options">
+        <div class="rating-option" v-for="n in 5" :key="n">
+          <input type="radio" :id="'rating-' + n" :value="n" v-model="rating">
+          <label :for="'rating-' + n">{{ n }}</label>
+        </div>
+      </div>
+      <button class="btn submit-btn" @click="submitRating()">Submit Rating</button>
+    </div>
+
+    <div v-else-if="showReviewForm">
+      <p>Enter your review:</p>
+      <textarea v-model="review"></textarea>
+      <button @click="submitReview()">Submit Review</button>
+    </div>
 
     <div v-if="testListingsUI">
       <form @submit.prevent="testSearch"> 
@@ -76,10 +93,10 @@
         <button type="submit" @click.self="reviewAgent" >Review Agent</button>  
         <button type="submit" @click.self="rateAgent">Rate Agent</button>
     </ul>
-  </form>
+    </form>
 
     </div>
-    
+    </div>
     </div>
 </template>
 
@@ -93,6 +110,10 @@ export default {
       testListingsUI : false,
       showFavourites : false,
       showAgents : false,
+      showRatingForm: false,
+      showReviewForm: false,
+      rating: '',
+      review: '',
       listingSearch: {
         name : "",
       },
@@ -279,7 +300,7 @@ export default {
     this.agents = agents;
     },
 
-    async reviewAgent(){
+    async submitReview(){
       try{
       const reviewAgents = await $fetch("/api/controller/user/buyer/reviewAgent", {
       method: "POST",
@@ -298,7 +319,7 @@ export default {
       }
     },
 
-    async rateAgent(){
+    async submitRating(){
       try{
       const rateAgents = await $fetch("/api/controller/user/buyer/rateAgent", {
       method: "POST",
@@ -374,6 +395,43 @@ button {
 button:hover {
   background-color: #45a049;
 }
+.dashboard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btn {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+}
+
+
+
+.rating-options {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.rating-option {
+  flex: 1;
+  text-align: center;
+}
+
+.review-textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.submit-btn {
+  background-color: #28a745;
+}
 </style>
-
-

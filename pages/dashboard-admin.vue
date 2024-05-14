@@ -107,7 +107,7 @@
       <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
       {{ user.username }}
     </li>
-    <button type="submit" @click.self="editUser" >Edit User</button>  
+    <button class="btn" @click="showUpdatePrompt(user.id)">Edit User</button>
     <button type="submit" @click.self="deleteUser">Delete User</button>
   </ul>
   </form>
@@ -140,8 +140,11 @@ data() {
       profile: "",
     },
   };
-},
+}
+
+,
 methods: {
+  
   async createProfile() {
     const createP = await $fetch("/api/controller/sysadmin/createProfile", {
       method: "POST",
@@ -307,7 +310,14 @@ methods: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(this.selectedUsers),
-    });
+    },
+    function showUpdatePrompt(userId) {
+    const newName = prompt("Please enter the new name for the account:");
+      if (newName !== null && newName.trim() !== "") {
+    //Edit this function to the name you want for the edit
+    updateUser(userId, newName);
+  }
+  });
   },
   async suspendProfile() {
     const suspendU = await $fetch("/api/controller/sysadmin/suspendProfile", {
@@ -328,7 +338,6 @@ methods: {
       await this.getProfile();
       await this.getUsers();
   },
-
 }
 
 </script>
