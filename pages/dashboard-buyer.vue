@@ -16,27 +16,27 @@
   <button @click="onClickDisabled(); Listings = true; showListings();">View Listings</button>
   <button @click="onClickDisabled(); oldListings = true; showOldListings();">View Old Listings</button>
   <button @click="onClickDisabled(); testListingsUI = true; testListings(); ">View All Listings for UI testing</button>
-  <button @click="onClickDisabled(); calculateMortgage = true">Calculate Mortgage</button>
   <button @click="onClickDisabled(); showFavourites = true">Favourites</button>
   <button @click="onClickDisabled(); showAgents = true; viewAgents()">Review Agents</button>
 </div>
 
-    <div v-if="calculateMortgage" class="center">
-        <label for="calculateMortgage" class="form-label">Name of property: </label>
-        <input type="text" id="calculateMortgage" v-model="calculateMortgage.name" class="form-control" />
-        <button type="submit" class="btn btn-primary" @click="calculate">Calculate</button>
-    </div>
-
     <div v-if="testListingsUI">
-      <form @submit.prevent="searchListings"> 
-    <input type="text" id="listings" v-model="testSearch.name" class="form-control" placeholder="Search Listings"/>
+      <form @submit.prevent="testSearch"> 
+    <input type="text" id="listings" v-model="testSearchs.name" class="form-control" placeholder="Search Listings"/>
     <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
+  <form @submit.prevent>
     <ul>
       <li v-for="listing in listings" :key="listing">
-        {{ listing }}
+        <input type="radio" v-model="selectedListing" :value="listing" name="listings"/>
+        Name: {{ listing.name }},
+        Location: {{ listing.location }},
+        Description: {{ listing.description }},
+        Price: {{ listing.price }}
       </li>
     </ul>
+      <button type="submit" @click.self="calculate">Calculate Mortgage</button>
+  </form>
     </div>
 
     <div v-if="Listings">
@@ -86,7 +86,12 @@
 export default {
   data() {
     return {
-      calculateMortgage: false,
+      calculateMortgage : false,
+      Listings : false,
+      oldListings : false,
+      testListingsUI : false,
+      showFavourites : false,
+      showAgents : false,
       listingSearch: {
         name : "",
       },
@@ -96,7 +101,7 @@ export default {
       calculateMortgage:{
         name : "",
       },
-      testSearch: {
+      testSearchs: {
         name : "",
       },
     };
@@ -107,26 +112,52 @@ export default {
       this.Listings = false;
       this.oldListings = false;
       this.testListingsUI = false;
+      this.showFavourites = false;
+      this.showAgents = false;
     },
 
     async testListings() {
       const test = await $fetch("/api/controller/user/buyer/testListings", {
         method: "POST",
       }); //add controller
-      console.log(test.listings[0])
       const listings = [];
         for (let i = 0; i < test.listings.length; i++) {
-            const dictionary = {"name": test.listings[i]};
+            const dictionary = test.listings[i];
             listings.push(dictionary);
         }
       this.listings = listings;
     },
 
+    async testSearch() {
+      console.log(this.testSearchs);
+    try{
+      const testS = await $fetch("/api/controller/user/buyer/testSearch", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.testSearchs),
+      }); //add controller
+      const listings = [];
+        for (let i = 0; i < testS.listings.length; i++) {
+            const dictionary = {"name": testS.listings[i]};
+            listings.push(dictionary);
+        }
+      this.listings = listings;
+      if (listings.length === 0){
+          alert("listings not found!");
+          this.testSearch();
+      }
+      this.$forceUpdate();
+    } catch (error) {
+      console.error('Failed to search listings:', error.message);
+      }
+ },
+
     async showListings() {
       const showL = await $fetch("/api/controller/user/buyer/showListings", {
         method: "POST",
       }); //add controller
-      console.log(showL.listings[0])
       const listings = [];
         for (let i = 0; i < showL.listings.length; i++) {
             const dictionary = {"name": showL.listings[i]};
@@ -200,13 +231,17 @@ export default {
  },
 
     async calculate(){
-            let loanAmount = document.getElementById("loanAmount").value;
-            let interestRate = 0.05;
-            let loanTerm = 30;
-            let monthlyPayment = loanAmount * (interestRate * Math.pow(1 + interestRate, loanTerm)) / (Math.pow(1 + interestRate, loanTerm) - 1);
-            alert("Your monthly payment is: " + monthlyPayment);
-            console.log("Your monthly payment is: " + monthlyPayment);
+      console.log(this.selectedListing);
+      const viewAgents = await $fetch("/api/controller/user/buyer/calculateMortgage", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.selectedListing),
+          }); //add controller
+          console.log(viewAgents);
         },
+        
         
     async showFavourites(){
     

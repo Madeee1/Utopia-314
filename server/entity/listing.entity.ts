@@ -170,13 +170,46 @@ export class Listing {
   }
 
   async calculateMortgage(body: any) {  
+    try{
+    const listings = await listingSchema.find({
+      name:body.name, 
+    });
 
+    return {
+      ok: true,
+      listings: listings,
+    };
+    }catch(error: any){
+      return { 
+        value: false, 
+        ok: false, 
+        error: error.message 
+      };
+    }
   }
 
   // for testing
   async allListings(body: any) {
     try{
     const listings = await listingSchema.find({});
+    
+    return {
+      ok: true,
+      listings: listings,
+    };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
+  }
+  async testSearch(body: any) {
+    try{
+    const listings = await listingSchema.find({
+      name:body.name, 
+    });
     
     return {
       ok: true,
