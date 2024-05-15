@@ -347,10 +347,10 @@ methods: {
       )
     });
     if (editU.ok){
-        alert("User editted successfully!");
+        alert("User edited successfully!");
         this.getUsers();
     } else {
-        alert("User not editted!");
+        alert("User not edited!");
     } 
   },
 
