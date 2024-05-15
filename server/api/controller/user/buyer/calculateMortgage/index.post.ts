@@ -2,9 +2,8 @@ import { Listing } from "~/server/entity/listing.entity";
 
 // CONTROLLER LAYER FOR POST CREATE PROFILE
 export default defineEventHandler(async (event) => {
-  const controller = new CMController();
 
-  console.log("event", event)
+  const controller = new CMController();
   return await controller.calculateMortgage(event);
 });
 
@@ -14,9 +13,9 @@ class CMController {
   constructor() {}
 
   async calculateMortgage(event: any) {
+    const body = await readBody(event);
 
     const profileRepo = new Listing();
-    return await profileRepo.calculateMortgage(event);
-    
+    return await profileRepo.calculateMortgage(body);
   }
 }

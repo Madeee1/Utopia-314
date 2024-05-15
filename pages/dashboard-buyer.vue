@@ -164,8 +164,7 @@ export default {
     },
 
     async testSearch() {
-      console.log(this.testSearchs);
-    // try{
+    try{
       const testS = await $fetch("/api/controller/user/buyer/testSearch", {
         method: "POST",
         headers: {
@@ -173,21 +172,20 @@ export default {
         },
         body: JSON.stringify(this.testSearchs),
       }); //add controller
-      console.log(testS);
-    //   const listings = [];
-    //     for (let i = 0; i < testS.listings.length; i++) {
-    //         const dictionary = testS.listings[i];
-    //         listings.push(dictionary);
-    //     }
-    //   this.listings = listings;
-    //   if (listings.length === 0){
-    //       alert("listings not found!");
-    //       this.testListings();
-    //   }
-    //   this.$forceUpdate();
-    // } catch (error) {
-    //   console.error('Failed to search listings:', error.message);
-      // }
+      const listings = [];
+        for (let i = 0; i < testS.listings.length; i++) {
+            const dictionary = testS.listings[i];
+            listings.push(dictionary);
+        }
+      this.listings = listings;
+      if (listings.length === 0){
+          alert("Listings not found!");
+          this.testListings();
+      }
+      this.$forceUpdate();
+    } catch (error) {
+      console.error('Failed to search listings:', error.message);
+      }
  },
 
     async showListings() {
@@ -271,8 +269,6 @@ export default {
     },
 
     async calculate(){
-      console.log(this.selectedListing.id);
-      console.log(this.selectedListing.name);
       const listingCM = await $fetch("/api/controller/user/buyer/calculateMortgage", {
           method: "POST",
           headers: {
@@ -284,9 +280,10 @@ export default {
             }
           ),
           }); //add controller
-          console.log(listingCM);
+          const listingPrice = listingCM.listings[0].price;
+          const mortgagePrice = parseInt(listingPrice) / (25*12);
       if (listingCM.ok) {
-        alert("Mortgage calculated!");
+        alert("Your mortage payment per month is " + mortgagePrice);
       } else {
         alert("Error. Please try again.");
       }

@@ -170,13 +170,14 @@ export class Listing {
   }
 
   async calculateMortgage(body: any) {  
+    console.log(body.listingId);
     try{
     const listings = await listingSchema.find({
       id:body.listingId, 
     }
   );
+    
     return {
-      
       ok: true,
       listings: listings,
     };

@@ -13,8 +13,9 @@ class searchOController {
   constructor() {}
 
   async searchOldListing(event: any) {
+    const body = await readBody(event);
 
     const profileRepo = new Listing();
-    return await profileRepo.searchOldListing(event);
+    return await profileRepo.searchOldListing(body);
   }
 }

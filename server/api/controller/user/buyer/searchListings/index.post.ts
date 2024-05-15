@@ -13,8 +13,9 @@ class searchLController {
   constructor() {}
 
   async searchListing(event: any) {
+    const body = await readBody(event);
 
     const profileRepo = new Listing();
-    return await profileRepo.searchListing(event);
+    return await profileRepo.searchListing(body);
   }
 }
