@@ -159,6 +159,11 @@ methods: {
     if (createP === "Profile created successfully!"){
         await this.getProfile();
         alert("Profile created successfully!");
+        this.profileData = {
+          profile: "",
+        };
+        this.createUserProfile = false;
+        this.showProfile = true;
     } else {
         alert("Profile not created!");
     } 
@@ -176,6 +181,14 @@ methods: {
         if (signUp.ok) {
           await this.getUsers();
           alert("Account created successfully!");
+          this.userData = {
+            username: "",
+            email: "",
+            password: "",
+            role: "",
+          };
+          this.createUserAccount = false,
+          this.showAccount = true;
         } else {
           alert("Account creation failed. Please try again.");
         }
@@ -308,7 +321,7 @@ methods: {
 },
 
     showUpdatePrompt(userId) {
-      const newName = prompt("Please enter the new name for the listing:");
+      const newName = prompt("Please enter the new username for user:");
       if (newName !== null && newName.trim() !== "") {
         this.editUser(userId, newName);
       }

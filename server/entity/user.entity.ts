@@ -141,20 +141,6 @@ export class userEntity {
     }
   }
 
-  async buyerAddAgentReview(body: any) {
-    const { agentId, review } = body;
-
-    try {
-      const response = await userSchema.findOneAndUpdate(
-        { id: agentId },
-        { $push: { reviews: review } }
-      );
-      return { ok: true, value: response };
-    } catch (error: any) {
-      return { ok: false, message: error.message };
-    }
-  }
-
   // POST to add to agent rating
   async addAgentRating(body: any) {
     const { agentId, rating } = body;
@@ -287,5 +273,28 @@ export class userEntity {
     }
   }
 
+  async editBuyerInfo(event:any, body: any) {
+    try{
+    const users = await userSchema.updateOne(
+      {
+        id: body.userId
+      }, 
+      {
+        "$set":{
+          email: body.email,
+      }});
+
+    return { 
+      ok: true, 
+      users : users 
+    };
+  }catch(error: any){
+    return { 
+      value: false, 
+      ok: false, 
+      error: error.message 
+    };
+    }
+  }
   
 }

@@ -1,10 +1,10 @@
 import { Listing } from "~/server/entity/listing.entity";
 
 // CONTROLLER LAYER FOR POST CREATE PROFILE
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   const controller = new testLController();
 
-  return await controller.allListings(event);
+  return await controller.allListings();
 });
 
 // Gets data driectly from boundary layer
@@ -12,9 +12,9 @@ export default defineEventHandler(async (event) => {
 class testLController {
   constructor() {}
 
-  async allListings(event: any) {
+  async allListings() {
 
     const profileRepo = new Listing();
-    return await profileRepo.allListings(event);
+    return await profileRepo.allListings();
   }
 }

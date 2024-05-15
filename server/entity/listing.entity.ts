@@ -91,7 +91,7 @@ export class Listing {
     }
   }
 
-  async viewListing(body: any) {
+  async viewListing() {
     try{
     const listings = await listingSchema.find({
       status: "On Sale"
@@ -110,7 +110,7 @@ export class Listing {
     }
   }
 
-  async viewOldListing(body: any) {
+  async viewOldListing() {
     try{
     const listings = await listingSchema.find({
       status: "Sold"
@@ -195,7 +195,7 @@ export class Listing {
   // for testing remember to remove
   // for testing remember to remove
   // for testing remember to remove
-  async allListings(body: any) {
+  async allListings() {
     try{
     const listings = await listingSchema.find();
     

@@ -16,9 +16,16 @@
   <button @click="onClickDisabled(); Listings = true;">View Listings</button>
   <button @click="onClickDisabled(); oldListings = true;">View Old Listings</button>
   <button @click="onClickDisabled(); testListingsUI = true;">View All Listings for UI testing</button>
-  <button @click="onClickDisabled(); showFavourites = true">Favourites</button>
+  <button @click="onClickDisabled(); showFavourites = true; getFavourites()">Favourites</button>
   <button @click="onClickDisabled(); showAgents = true; viewAgents();">View Agents</button>
-  <button @click="onClickDisabled(); showAgents = true; viewAgents();">Edit My Profile</button>
+  <button @click="onClickDisabled(); editMP = true; showLife()">Edit My Profile</button>
+
+  <div v-if="editMP">
+    <form @submit.prevent="editMyProfile">
+      <input type="email" id="email" v-model="newEmail" class="form-control" placeholder="Email"/>
+      <button type="submit" style="padding:2px 4px; border-radius: 6px;">Update</button>
+    </form>
+  </div>
 
    <div v-if="testListingsUI">
   <form @submit.prevent="testSearch">
@@ -104,6 +111,9 @@ export default {
   data() {
     return {
       sessionUsername: sessionStorage.getItem("username") || "",
+      sessionUserId: sessionStorage.getItem("userId") || "",
+      sessionEmail: sessionStorage.getItem("email") || "",
+      sessionRole: sessionStorage.getItem("role") || "",
       calculateMortgage : false,
       Listings : false,
       oldListings : false,
@@ -133,6 +143,7 @@ export default {
       this.calculateMortgage = false;
       this.Listings = false;
       this.oldListings = false;
+      this.editMP = false;
       this.testListingsUI = false;
       this.showFavourites = false;
       this.showAgents = false;
@@ -144,6 +155,7 @@ export default {
       this.calculateMortgage = false;
       this.Listings = false;
       this.oldListings = false;
+      this.editMP = false;
       this.testListingsUI = false;
       this.showFavourites = false;
       this.showRatingForm = false;
@@ -264,8 +276,36 @@ export default {
       }
  },
 
+    showUpdatePrompt(userId) {
+      const newName = prompt("Please enter the new name for the listing:");
+      if (newName !== null && newName.trim() !== "") {
+        this.editUser(userId, newName);
+      }
+    },
+
+    showLife(){
+      console.log("im alive");
+    },
+
     async editMyProfile(){
-      console.log("edit my profile");
+      const editMP = await $fetch("/api/controller/user/buyer/editInformation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(
+            {
+              userId : parseInt(this.sessionUserId),
+              email: this.newEmail,
+            }
+          ),
+        });
+      if (editMP.ok) {
+        alert("Profile updated successfully!");
+        this.sessionUsername = sessionStorage.getItem("username") || "";
+      } else {
+        alert("Error. Please try again.");
+      }
     },
 
     async calculate(){
@@ -291,9 +331,9 @@ export default {
 
         
         
-    // async showFavourites(){
-    
-    // },
+    async getFavourites(){
+      console.log("show favourites");
+    },
 
     // async addFavourite(){
     //   try{
@@ -378,6 +418,7 @@ export default {
   created(){
       this.testListings();
       this.viewAgents();
+      this.getFavourites();
   }
 };
 </script>
