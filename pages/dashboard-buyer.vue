@@ -11,21 +11,16 @@
 </nav>
 
 <div class="center">
+  <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded absolute top-4 left-4" @click="logout">
+      Log Out
+  </button>
   <h2 class="text-2xl font-bold">Buyer Dashboard</h2>
   <p>Welcome to the Buyer Dashboard, {{ sessionUsername }}</p>
-  <button @click="onClickDisabled(); Listings = true;">View Listings</button>
-  <button @click="onClickDisabled(); oldListings = true;">View Old Listings</button>
-  <button @click="onClickDisabled(); testListingsUI = true;">View All Listings for UI testing</button>
+  <button @click="onClickDisabled(); Listings = true; showListings()">View Listings</button>
+  <button @click="onClickDisabled(); oldListings = true; showOldListings()">View Old Listings</button>
   <button @click="onClickDisabled(); showFavourites = true; getFavourites()">Favourites</button>
   <button @click="onClickDisabled(); showAgents = true; viewAgents();">View Agents</button>
-  <button @click="onClickDisabled(); editMP = true; showLife()">Edit My Profile</button>
-
-  <div v-if="editMP">
-    <form @submit.prevent="editMyProfile">
-      <input type="email" id="email" v-model="newEmail" class="form-control" placeholder="Email"/>
-      <button type="submit" style="padding:2px 4px; border-radius: 6px;">Update</button>
-    </form>
-  </div>
+  <button @click="onClickDisabled(); showUpdatePrompt();">Edit My Profile</button>
 
   <div v-if="showFavourites">
     <form @submit.prevent>
@@ -39,9 +34,9 @@
   </form>
   </div>
 
-   <div v-if="testListingsUI">
-  <form @submit.prevent="testSearch">
-    <input type="text" id="users" v-model="testSearchs.name" class="form-control" placeholder="Search Listings"/>
+  <div v-if="Listings">
+  <form @submit.prevent="searchListings">
+    <input type="text" id="users" v-model="listingSearch.name" class="form-control" placeholder="Search Listings"/>
     <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
   </form>
   <form @submit.prevent>
@@ -49,25 +44,14 @@
     <li v-for="listing in listings" :key="listing">
       <input type="radio" v-model="selectedListing" :value="listing" name="listings"/>
       Name: {{ listing.name }},
-      Location: {{ listing.location }}
+      Location: {{ listing.location }}, 
+      Status: {{ listing.status }}
     </li>
       <button type="submit" @click.self="calculate">Calculate Mortgage</button>
       <button type="submit" @click.self="addFavourite">Add Favourite</button>
   </ul>
   </form>
   </div>
-
-    <div v-if="Listings">
-      <form @submit.prevent="searchListings"> 
-    <input type="text" id="listings" v-model="listingSearch.name" class="form-control" placeholder="Search Listings"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
-  </form>
-    <ul>
-      <li v-for="listing in listings" :key="listing">
-        {{ listing.name }}
-      </li>
-    </ul>
-    </div>
 
     <div v-if="oldListings">
       <form @submit.prevent="searchOldListings"> 
@@ -76,7 +60,9 @@
   </form>
     <ul>
       <li v-for="listing in oldlistings" :key="listing">
-        {{ listing.name }}
+        Name: {{ listing.name }},
+        Location: {{ listing.location }}, 
+        Status: {{ listing.status }}
       </li>
     </ul>
     </div>
@@ -129,7 +115,6 @@ export default {
       calculateMortgage : false,
       Listings : false,
       oldListings : false,
-      testListingsUI : false,
       showFavourites : false,
       showAgents : false,
       showRatingForm: false,
@@ -145,9 +130,6 @@ export default {
       calculateMortgage:{
         name : "",
       },
-      testSearchs: {
-        name : "",
-      },
     };
   },
   methods: {
@@ -155,8 +137,6 @@ export default {
       this.calculateMortgage = false;
       this.Listings = false;
       this.oldListings = false;
-      this.editMP = false;
-      this.testListingsUI = false;
       this.showFavourites = false;
       this.showAgents = false;
       this.showRatingForm = false;
@@ -167,70 +147,31 @@ export default {
       this.calculateMortgage = false;
       this.Listings = false;
       this.oldListings = false;
-      this.editMP = false;
-      this.testListingsUI = false;
       this.showFavourites = false;
       this.showRatingForm = false;
       this.showReviewForm = false;
     },
 
-    async testListings() {
-      const test = await $fetch("/api/controller/user/buyer/testListings", {
-        method: "POST",
-      }); //add controller
-      const listings = [];
-        for (let i = 0; i < test.listings.length; i++) {
-            const dictionary = test.listings[i];
-            listings.push(dictionary);
-        }
-      this.listings = listings;
-      this.$forceUpdate();
-    },
-
-    async testSearch() {
-    try{
-      const testS = await $fetch("/api/controller/user/buyer/testSearch", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.testSearchs),
-      }); //add controller
-      const listings = [];
-        for (let i = 0; i < testS.listings.length; i++) {
-            const dictionary = testS.listings[i];
-            listings.push(dictionary);
-        }
-      this.listings = listings;
-      if (listings.length === 0){
-          alert("Listings not found!");
-          this.testListings();
-      }
-      this.$forceUpdate();
-    } catch (error) {
-      console.error('Failed to search listings:', error.message);
-      }
- },
-
     async showListings() {
-      const showL = await $fetch("/api/controller/user/buyer/showListings", {
-        method: "POST",
-      }); //add controller
-      const listings = [];
-        for (let i = 0; i < showL.listings.length; i++) {
-            const dictionary = {"name": showL.listings[i]};
-            listings.push(dictionary);
-        }
-      this.listings = listings;
-    },
-
+          const showL = await $fetch("/api/controller/user/buyer/showListings", {
+            method: "POST",
+          }); //add controller
+          const listings = [];
+            for (let i = 0; i < showL.listings.length; i++) {
+                const dictionary = showL.listings[i];
+                listings.push(dictionary);
+            }
+          this.listings = listings;
+          this.$forceUpdate();
+        },
+ 
     async showOldListings() {
       const showO = await $fetch("/api/controller/user/buyer/showOldListings", {
         method: "POST",
       }); //add controller
       const oldlistings = [];
         for (let i = 0; i < showO.listings.length; i++) {
-            const dictionary = {"name": showO.listings[i]};
+            const dictionary = showO.listings[i];
             oldlistings.push(dictionary);
         }
       this.oldlistings = oldlistings;
@@ -247,13 +188,12 @@ export default {
       }); //add controller
       const listings = [];
         for (let i = 0; i < searchL.listings.length; i++) {
-            const dictionary = {"profile": searchL.listings[i].name};
+            const dictionary = searchL.listings[i];
             listings.push(dictionary);
-            
         }
       this.listings = listings;
       if (listings.length === 0){
-          alert("listings not found!");
+          alert("Listings not found!");
           this.showListings();
       }
       this.$forceUpdate();
@@ -262,44 +202,39 @@ export default {
       }
  },
 
- async searchOldListings() {
-    try{
-      const searchO = await $fetch("/api/controller/user/buyer/searchOldListings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.listingSearch),
-      }); //add controller
-      const listings = [];
-        for (let i = 0; i < searchO.listings.length; i++) {
-            const dictionary = {"profile": searchO.listings[i].profile};
-            listings.push(dictionary);
-            
-        }
-      this.listings = listings;
-      if (listings.length === 0){
-          alert("listings not found!");
-          this.showListings();
-      }
-      this.$forceUpdate();
-    } catch (error) {
-      console.error('Failed to search listings:', error.message);
-      }
- },
+    async searchOldListings() {
+        try{
+          const searchO = await $fetch("/api/controller/user/buyer/searchOldListings", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(this.oldListingsSearch),
+          }); //add controller
+          const listings = [];
+            for (let i = 0; i < searchO.listings.length; i++) {
+                const dictionary = searchO.listings[i];
+                listings.push(dictionary);
+            }
+          this.listings = listings;
+          if (listings.length === 0){
+              alert("Listings not found!");
+              this.showOldListings();
+          }
+          this.$forceUpdate();
+        } catch (error) {
+          console.error('Failed to search listings:', error.message);
+          }
+    },
 
-    showUpdatePrompt(userId) {
-      const newName = prompt("Please enter the new name for the listing:");
-      if (newName !== null && newName.trim() !== "") {
-        this.editUser(userId, newName);
+    showUpdatePrompt() {
+      const newEmail = prompt("Please enter new email:");
+      if (newEmail !== null && newEmail.trim() !== "") {
+        this.editUser(newEmail);
       }
     },
 
-    showLife(){
-      console.log("im alive");
-    },
-
-    async editMyProfile(){
+    async editUser(newEmail){
       const editMP = await $fetch("/api/controller/user/buyer/editInformation", {
           method: "POST",
           headers: {
@@ -308,7 +243,7 @@ export default {
           body: JSON.stringify(
             {
               userId : parseInt(this.sessionUserId),
-              email: this.newEmail,
+              email: newEmail,
             }
           ),
         });
@@ -341,8 +276,6 @@ export default {
       }
     },
 
-        
-        
     async getFavourites(){
       try{
       const getFav = await $fetch("/api/controller/user/buyer/getFavourite", {
@@ -473,12 +406,17 @@ export default {
         console.error('Failed to leave a rating:', error.message);
       }
     },
+    logout() {
+      sessionStorage.clear();
+      navigateTo("/signin");
+    }
   },
    
   
 
   created(){
-      this.testListings();
+      this.showListings();
+      this.showOldListings();
       this.viewAgents();
       this.getFavourites();
   }

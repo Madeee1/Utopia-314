@@ -4,7 +4,7 @@ import { Listing } from "~/server/entity/listing.entity";
 export default defineEventHandler(async () => {
   const controller = new viewLController();
 
-  return await controller.viewListing();
+  return await controller.viewListings();
 });
 
 // Gets data driectly from boundary layer
@@ -12,9 +12,9 @@ export default defineEventHandler(async () => {
 class viewLController {
   constructor() {}
 
-  async viewListing() {
+  async viewListings() {
 
     const profileRepo = new Listing();
-    return await profileRepo.viewListing();
+    return await profileRepo.viewListings();
   }
 }

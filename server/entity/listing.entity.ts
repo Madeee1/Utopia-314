@@ -91,10 +91,10 @@ export class Listing {
     }
   }
 
-  async viewListing() {
+  async viewListings() {
     try{
     const listings = await listingSchema.find({
-      status: "On Sale"
+      status: "On Sale",
     });
     
     return {
@@ -133,7 +133,7 @@ export class Listing {
     try{
     const listings = await listingSchema.find({
       name:body.name, 
-      status: "On Sale"
+      status: "On Sale",
     });
     
     return {
@@ -187,48 +187,6 @@ export class Listing {
         ok: false, 
         error: error.message 
       };
-    }
-  }
-
-  // for testing remember to remove
-  // for testing remember to remove
-  // for testing remember to remove
-  // for testing remember to remove
-  // for testing remember to remove
-  async allListings() {
-    try{
-    const listings = await listingSchema.find();
-    
-    return {
-      ok: true,
-      listings: listings,
-    };
-  }catch(error: any){
-    return { 
-      value: false, 
-      ok: false, 
-      error: error.message 
-    };
-    }
-  }
-
-  async testSearch(body: any) {
-    try{
-    const listings = await listingSchema.find(
-    {
-      name:body.name, 
-    });
-    
-    return {
-      ok: true,
-      listings: listings,
-    };
-  }catch(error: any){
-    return { 
-      value: false, 
-      ok: false, 
-      error: error.message 
-    };
     }
   }
   

@@ -11,6 +11,12 @@
 </nav>
 
 <div class="center">
+  <button
+        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded absolute top-4 left-4"
+        @click="logout"
+      >
+        Log Out
+      </button>
 <h2 class="text-2xl font-bold">Admin Dashboard</h2>
 <p>Welcome to the Admin Dashboard, {{ sessionUsername }}. Here you can manage User Profile and User Accounts.</p>
 <!-- UserProfile -->
@@ -363,6 +369,10 @@ methods: {
         alert("Profile not suspended!");
     } 
   },
+  logout() {
+  sessionStorage.clear();
+  navigateTo("/signin");
+}
 },
   async created() {
       await this.getProfile();
