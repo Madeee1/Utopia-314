@@ -5,7 +5,7 @@ import { UserDto } from "~/server/entity/dto/user.dto";
 export default defineEventHandler(async (event) => {
   const controller = new addFController();
 
-  return await controller.addFavouriteListing(event);
+  return await controller.getFavouriteListing(event);
 });
 
 // Gets data driectly from boundary layer
@@ -13,10 +13,10 @@ export default defineEventHandler(async (event) => {
 class addFController {
   constructor() {}
 
-  async addFavouriteListing(event: any) {
+  async getFavouriteListing(event: any) {
     const body = await readBody(event);
 
     const profileRepo = new userEntity();
-    return await profileRepo.addFavouriteListing(body);
+    return await profileRepo.getFavouriteListing(body);
   }
 }

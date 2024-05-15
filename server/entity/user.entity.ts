@@ -296,5 +296,68 @@ export class userEntity {
     };
     }
   }
+
+  async addFavouriteListing(body: any) {
+    try{
+    const users = await userSchema.updateOne(
+      {
+        id: body.userId
+      },
+      {
+        "$push":{favourites: body.listingName}
+      });
+      return {
+        ok: true,
+        users: users,
+      };
+    }catch(error: any){
+      return { 
+        value: false, 
+        ok: false, 
+        error: error.message 
+      };
+      }
+    }
+
+    async deleteFavouriteListing(body: any) {
+      try{
+      const users = await userSchema.updateOne(
+        {
+          id: body.userId
+        },
+        {
+          "$pull":{favourites: body.listingName}
+        });
+        return {
+          ok: true,
+          users: users,
+        };
+      }catch(error: any){
+        return { 
+          value: false, 
+          ok: false, 
+          error: error.message 
+        };
+        }
+      }
+
+    async getFavouriteListing(body: any) {
+      try{
+      const users = await userSchema.find(
+        {
+          id: body.userId
+        });
+        return {
+          ok: true,
+          users: users,
+        };
+      }catch(error: any){
+        return { 
+          value: false, 
+          ok: false, 
+          error: error.message 
+        };
+        }
+      }
   
 }

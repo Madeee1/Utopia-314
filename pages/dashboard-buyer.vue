@@ -27,6 +27,18 @@
     </form>
   </div>
 
+  <div v-if="showFavourites">
+    <form @submit.prevent>
+    <ul>
+    <li v-for="favourite in favourites" :key="favourite">
+      <input type="radio" v-model="selectedFavourite" :value="favourite" name="favourites"/>
+      Name: {{ favourite }}
+    </li>
+      <button type="submit" @click.self="deleteFavourites">Delete Favourite</button>
+  </ul>
+  </form>
+  </div>
+
    <div v-if="testListingsUI">
   <form @submit.prevent="testSearch">
     <input type="text" id="users" v-model="testSearchs.name" class="form-control" placeholder="Search Listings"/>
@@ -332,27 +344,77 @@ export default {
         
         
     async getFavourites(){
-      console.log("show favourites");
+      try{
+      const getFav = await $fetch("/api/controller/user/buyer/getFavourite", {
+      method: "POST",
+      headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId : parseInt(this.sessionUserId),
+          }),
+    });
+      const favourites = [];
+        for (let i = 0; i < getFav.users[0].favourites.length; i++) {
+            const dictionary = getFav.users[0].favourites[i];
+            favourites.push(dictionary);
+        }
+      this.favourites = favourites;
+    //   if (listings.length === 0){
+    //       alert("listings not found!");
+    //       this.showListings();
+    //   }
+      this.$forceUpdate();
+      } catch (error) {
+        console.error('Failed to add to favourites:', error.message);
+      }
     },
 
-    // async addFavourite(){
-    //   try{
-    //   const addFav = await $fetch("/api/controller/user/buyer/addFavourite", {
-    //   method: "POST",
-    //   headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(this.selectedListing),
-    // });
-    //     if (addFav.ok) {
-    //       alert("Listing added to favourites!");
-    //     } else {
-    //       alert("Error. Please try again.");
-    //     }
-    //   } catch (error) {
-    //     console.error('Failed to add to favourites:', error.message);
-    //   }
-    // },
+    async deleteFavourites(){
+      try{
+      const deleteFav = await $fetch("/api/controller/user/buyer/deleteFavourite", {
+      method: "POST",
+      headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId : this.sessionUserId,
+            listingName : this.selectedFavourite,
+          }),
+    });
+        if (deleteFav.ok) {
+          alert("Listing deleted from favourites!");
+        } else {
+          alert("Error. Please try again.");
+        }
+        this.getFavourites();
+      } catch (error) {
+        console.error('Failed to delete from favourites:', error.message);
+      }
+    },
+
+    async addFavourite(){
+      try{
+      const addFav = await $fetch("/api/controller/user/buyer/addFavourite", {
+      method: "POST",
+      headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId : this.sessionUserId,
+            listingName : this.selectedListing.name,
+            listingLocation : this.selectedListing.location,
+          }),
+    });
+        if (addFav.ok) {
+          alert("Listing added to favourites!");
+        } else {
+          alert("Error. Please try again.");
+        }
+      } catch (error) {
+        console.error('Failed to add to favourites:', error.message);
+      }
+    },
 
     async viewAgents() {
     const viewAgents = await $fetch("/api/controller/user/buyer/viewAgents", {
