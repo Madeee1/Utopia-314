@@ -172,10 +172,11 @@ export class Listing {
   async calculateMortgage(body: any) {  
     try{
     const listings = await listingSchema.find({
-      name:body.name, 
-    });
-
+      id:body.listingId, 
+    }
+  );
     return {
+      
       ok: true,
       listings: listings,
     };
@@ -188,28 +189,14 @@ export class Listing {
     }
   }
 
-  async addFavourite(body: any) {
-    try{
-    const listings = await userSchema.find({
-      name:body.name, 
-    },);
-    return {
-      ok: true,
-      listings: listings,
-    };
-  }catch(error: any){
-    return { 
-      value: false, 
-      ok: false, 
-      error: error.message 
-    };
-    }
-  }
-
-  // for testing
+  // for testing remember to remove
+  // for testing remember to remove
+  // for testing remember to remove
+  // for testing remember to remove
+  // for testing remember to remove
   async allListings(body: any) {
     try{
-    const listings = await listingSchema.find({});
+    const listings = await listingSchema.find();
     
     return {
       ok: true,
@@ -226,7 +213,8 @@ export class Listing {
 
   async testSearch(body: any) {
     try{
-    const listings = await listingSchema.find({
+    const listings = await listingSchema.find(
+    {
       name:body.name, 
     });
     

@@ -141,7 +141,7 @@ export class userEntity {
     }
   }
 
-  async baddAgentReview(body: any) {
+  async buyerAddAgentReview(body: any) {
     const { agentId, review } = body;
 
     try {
@@ -172,9 +172,7 @@ export class userEntity {
 
   async viewUser(event:any, body: UserDto) {
     try{
-    const response = await userSchema.find({}, {
-      username:1, _id:0
-    });
+    const response = await userSchema.find();
     
     return {
       ok: true,
@@ -194,9 +192,6 @@ export class userEntity {
     const response = await userSchema.find(
       {
         role: "agent"
-      }, 
-      {
-        username:1, _id:0
       });
     
     return {
@@ -253,9 +248,6 @@ export class userEntity {
     const users = await userSchema.find(
       {
         username:body.username
-      },
-      {
-        username:1, _id:0
       });
     
     return {
@@ -273,13 +265,14 @@ export class userEntity {
 
   async editUser(event: any, body: any) {
     try{
-    const users = await userSchema.find(
+    const users = await userSchema.updateOne(
       {
-        username:body.username
-      },
+        id: body.userId
+      }, 
       {
-        username:1, _id:0
-      });
+        "$set":{
+          username: body.username,
+      }});
 
     return { 
       ok: true, 

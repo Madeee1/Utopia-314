@@ -4,6 +4,7 @@ import { Listing } from "~/server/entity/listing.entity";
 export default defineEventHandler(async (event) => {
   const controller = new CMController();
 
+  console.log("event", event)
   return await controller.calculateMortgage(event);
 });
 
@@ -13,6 +14,7 @@ class CMController {
   constructor() {}
 
   async calculateMortgage(event: any) {
+
     const profileRepo = new Listing();
     return await profileRepo.calculateMortgage(event);
     

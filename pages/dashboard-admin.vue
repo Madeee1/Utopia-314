@@ -12,7 +12,7 @@
 
 <div class="center">
 <h2 class="text-2xl font-bold">Admin Dashboard</h2>
-<p>Welcome to the Admin Dashboard. Here you can manage User Profile and User Accounts.</p>
+<p>Welcome to the Admin Dashboard, {{ sessionUsername }}. Here you can manage User Profile and User Accounts.</p>
 <!-- UserProfile -->
 <button @click="createUserProfile = true; showProfile = false; createUserAccount = false; showAccount = false;">Create User Profile</button>
 <button @click="showProfile = true; createUserProfile = false; createUserAccount = false; showAccount = false; getProfile();">View User Profile</button>
@@ -39,8 +39,9 @@
   <form @submit.prevent>
   <ul>
     <li v-for="profile in profiles" :key="profile.profiles">
-      <input type="checkbox" v-model="selectedProfile" :value="profile" name="profile"/>
-      {{ profile.profile }}
+      <input type="radio" v-model="selectedProfile" :value="profile" name="profile"/>
+      Profile: {{ profile.profile }},
+      Suspended: {{ profile.suspended }}
     </li>
       <button type="submit" @click.self="deleteProfile">Delete Profile</button>
       <button type="submit" @click.self="suspendProfile">Suspend Profile</button>
@@ -103,11 +104,12 @@
   </form>
   <form @submit.prevent>
   <ul>
-    <li v-for="user in users" :key="user.username">
+    <li v-for="user in users" :key="user">
       <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
-      {{ user.username }}
+      username: {{ user.username }}, 
+      email: {{ user.email }}
     </li>
-    <button class="btn" @click="showUpdatePrompt(user.id)">Edit User</button>
+    <button class="submit" @click="showUpdatePrompt(selectedUsers.id)">Edit User</button>
     <button type="submit" @click.self="deleteUser">Delete User</button>
   </ul>
   </form>
@@ -120,6 +122,7 @@
 export default {
 data() {
   return {
+    sessionUsername: sessionStorage.getItem("username") || "",
     createUserProfile: false,
     showProfile: false,
     createUserAccount: false,
@@ -144,7 +147,7 @@ data() {
 
 ,
 methods: {
-  
+
   async createProfile() {
     const createP = await $fetch("/api/controller/sysadmin/createProfile", {
       method: "POST",
@@ -187,10 +190,11 @@ methods: {
     }); //add controller
     const profiles = [];
       for (let i = 0; i < viewP.profiles.length; i++) {
-          const dictionary = {"profile": viewP.profiles[i].profile};
+          const dictionary = viewP.profiles[i];
           profiles.push(dictionary);
       }
     this.profiles = profiles;
+    this.$forceUpdate();
   },
 
   async getUsers() {
@@ -199,16 +203,17 @@ methods: {
     }); //add controller
     const users = [];
       for (let i = 0; i < getUser.users.length; i++) {
-          const dictionary = {"username": getUser.users[i].username};
+          const dictionary = getUser.users[i];
           users.push(dictionary);
       }
     this.users = users;
+    this.$forceUpdate();
   },
 
   async deleteProfile() {
     try {
       const response = await $fetch("/api/controller/sysadmin/deleteProfile", { //add controller
-        method: "DELETE",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -222,7 +227,7 @@ methods: {
         alert("Profile deleted successfully!");
       }
       this.selectedProfile = [];
-      await this.getProfile();
+      this.getProfile();
     } catch (error) {
       console.error('Failed to delete profile:', error.message);
     }
@@ -245,7 +250,7 @@ methods: {
         alert("User deleted successfully!");
       }
       this.selectedUsers = [];
-      await this.getUsers();
+      this.getUsers();
     } catch (error) {
       console.error('Failed to delete users:', error.message);
     }
@@ -262,9 +267,8 @@ methods: {
       }); //add controller
       const profiles = [];
         for (let i = 0; i < searchP.profiles.length; i++) {
-            const dictionary = {"profile": searchP.profiles[i].profile};
+            const dictionary = searchP.profiles[i];
             profiles.push(dictionary);
-            
         }
       this.profiles = profiles;
       if (profiles.length === 0){
@@ -278,6 +282,7 @@ methods: {
  },
 
   async searchUser() {
+    console.log(this.userSearch);
     try{
       const searchU = await $fetch("/api/controller/sysadmin/searchUser", {
         method: "POST",
@@ -288,7 +293,7 @@ methods: {
       }); //add controller
       const users = [];
         for (let i = 0; i < searchU.users.length; i++) {
-            const dictionary = {"username": searchU.users[i].username};
+            const dictionary = searchU.users[i];
             users.push(dictionary);
         }
       this.users = users;
@@ -302,33 +307,45 @@ methods: {
       }
 },
 
-  async editUser() {
-    console.log(this.selectedUsers);
-    const suspendU = await $fetch("/api/controller/sysadmin/editUser", {
+    showUpdatePrompt(userId) {
+      const newName = prompt("Please enter the new name for the listing:");
+      if (newName !== null && newName.trim() !== "") {
+        this.editUser(userId, newName);
+      }
+    },
+
+  async editUser(userId, newName) {
+    const editU = await $fetch("/api/controller/sysadmin/editUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.selectedUsers),
-    },
-    function showUpdatePrompt(userId) {
-    const newName = prompt("Please enter the new name for the account:");
-      if (newName !== null && newName.trim() !== "") {
-    //Edit this function to the name you want for the edit
-    updateUser(userId, newName);
-  }
-  });
+      body: JSON.stringify(
+        {
+          username: newName,
+          userId: parseInt(userId),
+        }
+      )
+    });
+    if (editU.ok){
+        alert("User editted successfully!");
+        this.getUsers();
+    } else {
+        alert("User not editted!");
+    } 
   },
+
   async suspendProfile() {
-    const suspendU = await $fetch("/api/controller/sysadmin/suspendProfile", {
+    const suspendP = await $fetch("/api/controller/sysadmin/suspendProfile", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(this.selectedProfile),
     });
-    if (suspendU.ok){
+    if (suspendP.ok){
         alert("Profile suspended successfully!");
+        this.getProfile();
     } else {
         alert("Profile not suspended!");
     } 

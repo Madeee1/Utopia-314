@@ -26,11 +26,7 @@ export class profileEntity {
 
   async viewP(event:any, body: profileDto) {
     try{
-      const profiles = await profileSchema.find(
-        {}, 
-        {
-          profile:1, _id:0
-        });
+      const profiles = await profileSchema.find();
       
       return {
         ok: true,
@@ -50,11 +46,7 @@ export class profileEntity {
       const profiles = await profileSchema.find(
         {
           profile:body.profile
-        },
-        {
-          profile:1, _id:0
-        }
-      );
+        });
       
       return {
         ok : true,

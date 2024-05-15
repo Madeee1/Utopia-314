@@ -12,15 +12,70 @@
 
 <div class="center">
   <h2 class="text-2xl font-bold">Buyer Dashboard</h2>
-  <p>Welcome to the Buyer Dashboard.</p>
-  <button @click="onClickDisabled(); Listings = true; showListings();">View Listings</button>
-  <button @click="onClickDisabled(); oldListings = true; showOldListings();">View Old Listings</button>
-  <button @click="onClickDisabled(); testListingsUI = true; testListings(); ">View All Listings for UI testing</button>
+  <p>Welcome to the Buyer Dashboard, {{ sessionUsername }}</p>
+  <button @click="onClickDisabled(); Listings = true;">View Listings</button>
+  <button @click="onClickDisabled(); oldListings = true;">View Old Listings</button>
+  <button @click="onClickDisabled(); testListingsUI = true;">View All Listings for UI testing</button>
   <button @click="onClickDisabled(); showFavourites = true">Favourites</button>
-  <button @click="showRatingForm = true; showReviewForm = false">Rate Agent</button>
-  <button @click="showReviewForm = true; showRatingForm = false">Review Agent</button>
+  <button @click="onClickDisabled(); showAgents = true; viewAgents();">View Agents</button>
+  <button @click="onClickDisabled(); showAgents = true; viewAgents();">Edit My Profile</button>
 
-  <div v-if="showRatingForm" class="form-container">
+   <div v-if="testListingsUI">
+  <form @submit.prevent="testSearch">
+    <input type="text" id="users" v-model="testSearchs.name" class="form-control" placeholder="Search Listings"/>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
+  </form>
+  <form @submit.prevent>
+  <ul>
+    <li v-for="listing in listings" :key="listing">
+      <input type="radio" v-model="selectedListing" :value="listing" name="listings"/>
+      Name: {{ listing.name }},
+      Location: {{ listing.location }}
+    </li>
+      <button type="submit" @click.self="calculate">Calculate Mortgage</button>
+      <button type="submit" @click.self="addFavourite">Add Favourite</button>
+  </ul>
+  </form>
+  </div>
+
+    <div v-if="Listings">
+      <form @submit.prevent="searchListings"> 
+    <input type="text" id="listings" v-model="listingSearch.name" class="form-control" placeholder="Search Listings"/>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
+  </form>
+    <ul>
+      <li v-for="listing in listings" :key="listing">
+        {{ listing.name }}
+      </li>
+    </ul>
+    </div>
+
+    <div v-if="oldListings">
+      <form @submit.prevent="searchOldListings"> 
+    <input type="text" id="oldlistings" v-model="oldListingsSearch.name" class="form-control" placeholder="Search Old Listings"/>
+    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
+  </form>
+    <ul>
+      <li v-for="listing in oldlistings" :key="listing">
+        {{ listing.name }}
+      </li>
+    </ul>
+    </div>
+
+    <div v-if="showAgents">
+    <form @submit.prevent>
+    <ul>
+      <li v-for="user in agents" :key="user.username">
+      <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
+      username: {{ user.username }},
+      email: {{ user.email }},
+      position: {{ user.role }}
+
+      </li>
+        <button @click="reviewAndRating(); showRatingForm = true;">Rate Agent</button>
+        <button @click="reviewAndRating(); showReviewForm = true;">Review Agent</button>
+    </ul>
+    <div v-if="showRatingForm" class="form-container">
       <p>Select a rating:</p>
       <div class="rating-options">
         <div class="rating-option" v-for="n in 5" :key="n">
@@ -36,64 +91,8 @@
       <textarea v-model="review"></textarea>
       <button @click="submitReview()">Submit Review</button>
     </div>
-
-    <div v-if="testListingsUI">
-      <form @submit.prevent="testSearch"> 
-    <input type="text" id="listings" v-model="testSearchs.name" class="form-control" placeholder="Search Listings"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
-  </form>
-  <form @submit.prevent>
-    <ul>
-      <li v-for="listing in listings" :key="listing">
-        <input type="radio" v-model="selectedListing" :value="listing" name="listings"/>
-        Name: {{ listing.name }},
-        Location: {{ listing.location }},
-        Description: {{ listing.description }},
-        Price: {{ listing.price }}
-      </li>
-    </ul>
-      <button type="submit" @click.self="calculate">Calculate Mortgage</button>
-      <button type="submit" @click.self="addFavourite">Add Favourite</button>
-  </form>
-    </div>
-
-    <div v-if="Listings">
-      <form @submit.prevent="searchListings"> 
-    <input type="text" id="listings" v-model="listingSearch.name" class="form-control" placeholder="Search Listings"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
-  </form>
-    <ul>
-      <li v-for="listing in listings" :key="listing">
-        {{ listing }}
-      </li>
-    </ul>
-    </div>
-
-    <div v-if="oldListings">
-      <form @submit.prevent="searchOldListings"> 
-    <input type="text" id="oldlistings" v-model="oldListingsSearch.name" class="form-control" placeholder="Search Old Listings"/>
-    <button type="submit" style="padding:2px 4px; border-radius: 6px;">Search</button>
-  </form>
-    <ul>
-      <li v-for="listing in oldlistings" :key="listing">
-        {{ listing }}
-      </li>
-    </ul>
-    </div>
-
-    <div v-if="showAgents">
-      
-
-    <form @submit.prevent>
-    <ul>
-      <li v-for="user in agents" :key="user.username">
-      <input type="radio" v-model="selectedUsers" :value="user" name="user"/>
-      {{ user.username }}
-      </li>
-        <button type="submit" @click.self="reviewAgent" >Review Agent</button>  
-        <button type="submit" @click.self="rateAgent">Rate Agent</button>
-    </ul>
     </form>
+    
 
     </div>
     </div>
@@ -104,6 +103,7 @@
 export default {
   data() {
     return {
+      sessionUsername: sessionStorage.getItem("username") || "",
       calculateMortgage : false,
       Listings : false,
       oldListings : false,
@@ -136,6 +136,18 @@ export default {
       this.testListingsUI = false;
       this.showFavourites = false;
       this.showAgents = false;
+      this.showRatingForm = false;
+      this.showReviewForm = false;
+    },
+
+    async reviewAndRating(){
+      this.calculateMortgage = false;
+      this.Listings = false;
+      this.oldListings = false;
+      this.testListingsUI = false;
+      this.showFavourites = false;
+      this.showRatingForm = false;
+      this.showReviewForm = false;
     },
 
     async testListings() {
@@ -148,11 +160,12 @@ export default {
             listings.push(dictionary);
         }
       this.listings = listings;
+      this.$forceUpdate();
     },
 
     async testSearch() {
       console.log(this.testSearchs);
-    try{
+    // try{
       const testS = await $fetch("/api/controller/user/buyer/testSearch", {
         method: "POST",
         headers: {
@@ -160,20 +173,21 @@ export default {
         },
         body: JSON.stringify(this.testSearchs),
       }); //add controller
-      const listings = [];
-        for (let i = 0; i < testS.listings.length; i++) {
-            const dictionary = {"name": testS.listings[i]};
-            listings.push(dictionary);
-        }
-      this.listings = listings;
-      if (listings.length === 0){
-          alert("listings not found!");
-          this.testSearch();
-      }
-      this.$forceUpdate();
-    } catch (error) {
-      console.error('Failed to search listings:', error.message);
-      }
+      console.log(testS);
+    //   const listings = [];
+    //     for (let i = 0; i < testS.listings.length; i++) {
+    //         const dictionary = testS.listings[i];
+    //         listings.push(dictionary);
+    //     }
+    //   this.listings = listings;
+    //   if (listings.length === 0){
+    //       alert("listings not found!");
+    //       this.testListings();
+    //   }
+    //   this.$forceUpdate();
+    // } catch (error) {
+    //   console.error('Failed to search listings:', error.message);
+      // }
  },
 
     async showListings() {
@@ -252,17 +266,32 @@ export default {
       }
  },
 
+    async editMyProfile(){
+      console.log("edit my profile");
+    },
+
     async calculate(){
-      console.log(this.selectedListing);
-      const viewAgents = await $fetch("/api/controller/user/buyer/calculateMortgage", {
+      console.log(this.selectedListing.id);
+      console.log(this.selectedListing.name);
+      const listingCM = await $fetch("/api/controller/user/buyer/calculateMortgage", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(this.selectedListing),
+          body: JSON.stringify(
+            {
+              listingId : parseInt(this.selectedListing.id),
+            }
+          ),
           }); //add controller
-          console.log(viewAgents);
-        },
+          console.log(listingCM);
+      if (listingCM.ok) {
+        alert("Mortgage calculated!");
+      } else {
+        alert("Error. Please try again.");
+      }
+    },
+
         
         
     // async showFavourites(){
@@ -294,20 +323,25 @@ export default {
     }); //add controller
     const agents = [];
       for (let i = 0; i < viewAgents.users.length; i++) {
-          const dictionary = {"username": viewAgents.users[i].username};
+          const dictionary = viewAgents.users[i];
           agents.push(dictionary);
       }
     this.agents = agents;
     },
 
     async submitReview(){
+      console.log(this.review)
+      console.log(this.selectedUsers.id)
       try{
       const reviewAgents = await $fetch("/api/controller/user/buyer/reviewAgent", {
       method: "POST",
       headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(this.selectedUsers),
+          body: JSON.stringify({
+            review: this.review,
+            agentId: this.selectedUsers.id,
+          }),
     });
         if (reviewAgents.ok) {
           alert("Agent reviewed successfully!");
@@ -326,7 +360,10 @@ export default {
       headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(this.selectedUsers),
+          body: JSON.stringify({
+            rating: this.rating,
+            agentId: this.selectedUsers.id,
+          }),
     });
         if (rateAgents.ok) {
           alert("Agent rated successfully!");
@@ -339,7 +376,7 @@ export default {
     },
   },
    
-
+  
 
   created(){
       this.testListings();
