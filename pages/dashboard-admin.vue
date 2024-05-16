@@ -1,14 +1,14 @@
 <template>
   <div class="font-sans bg-gray-50">
-    <header class="bg-gray-100 p-4 text-center shadow">
-      <h1 class="text-xl font-bold">Admin Page</h1>
-    </header>
+  <header class="bg-gray-100 p-4 text-center shadow">
+    <h1 class="text-xl font-bold">Admin Page</h1>
+</header>
 
-    <nav class="bg-gray-800 text-white p-3 text-center">
-      <a href="#" class="mx-4 no-underline hover:text-gray-300">Home</a>
-      <a href="#" class="mx-4 no-underline hover:text-gray-300">Properties</a>
-      <a href="#" class="mx-4 no-underline hover:text-gray-300">Contact Us</a>
-    </nav>
+<nav class="bg-gray-800 text-white p-3 text-center">
+    <a href="#" class="mx-4 no-underline hover:text-gray-300">Home</a>
+    <a href="#" class="mx-4 no-underline hover:text-gray-300">Properties</a>
+    <a href="#" class="mx-4 no-underline hover:text-gray-300">Contact Us</a>
+</nav>
 
 <div class="center">
   <button
@@ -174,12 +174,6 @@ methods: {
         alert("Profile not created!");
     } 
   },
-  methods: {
-    async onClickDisabled() {
-      this.showCreateRole = false;
-      this.showRoles = false;
-      this.showUsers = false;
-    },
 
   async createAccount() {
     try{
@@ -258,120 +252,15 @@ methods: {
     }
   },
 
-    async getRoles() {
-      const viewP = await $fetch("/api/controller/sysadmin/viewProfile", {
-        method: "POST",
-      }); //add controller
-      const profiles = [];
-      for (let i = 0; i < viewP.profiles.length; i++) {
-        const dictionary = { profile: viewP.profiles[i].profile };
-        profiles.push(dictionary);
-      }
-      this.roles = profiles;
-    },
-
-    async getUsers() {
-      const getUser = await $fetch("/api/controller/sysadmin/viewUser", {
-        method: "POST",
-      }); //add controller
-      const users = [];
-      for (let i = 0; i < getUser.users.length; i++) {
-        const dictionary = { username: getUser.users[i].username };
-        users.push(dictionary);
-      }
-      this.users = users;
-    },
-
-    async deleteRole() {
-      try {
-        const response = await $fetch(
-          "/api/controller/sysadmin/deleteProfile",
-          {
-            //add controller
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(this.selectedRoles),
-          }
-        );
-
-        if (response !== "Profile deleted successfully!") {
-          alert("Profile not deleted!");
-          throw new Error("Failed to delete roles");
-        } else {
-          alert("Profile deleted successfully!");
-        }
-        this.selectedRoles = [];
-      } catch (error) {
-        console.error("Failed to delete roles:", error.message);
-      }
-    },
-
-    async deleteUser() {
-      try {
-        const response = await $fetch("/api/controller/sysadmin/deleteUser", {
-          //add controller
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.selectedUsers),
-        });
-
-        if (response !== "User deleted successfully!") {
-          alert("User not deleted!");
-          throw new Error("Failed to delete users");
-        } else {
-          alert("User deleted successfully!");
-        }
-        this.selectedUsers = [];
-      } catch (error) {
-        console.error("Failed to delete users:", error.message);
-      }
-    },
-
-    async searchRoles() {
-      const searchP = await $fetch("/api/controller/sysadmin/searchProfile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.formData),
-      }); //add controller
-      const profiles = [];
-      for (let i = 0; i < searchP.profiles.length; i++) {
-        const dictionary = { profile: searchP.profiles[i].profile };
-        profiles.push(dictionary);
-      }
-      this.roles = profiles;
-    },
-
-    async searchUser() {
-      const searchU = await $fetch("/api/controller/sysadmin/searchUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.userForm),
-      }); //add controller
-      const users = [];
-      for (let i = 0; i < searchU.users.length; i++) {
-        const dictionary = { username: searchU.users[i].username };
-        users.push(dictionary);
-      }
-      this.roles = users;
-    },
-
-    async editUser() {
-      const suspendU = await $fetch("/api/controller/sysadmin/editUser", {
+  async deleteUser() {
+    try {
+      const response = await $fetch("/api/controller/sysadmin/deleteUser", { //add controller
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(this.selectedUsers),
       });
-    },
 
       if (response !== "User deleted successfully!") {
         alert("User not deleted!");
@@ -494,49 +383,52 @@ methods: {
 </script>
 
 <style scoped>
-input.form-control {
-  border: 2px solid black;
-  padding: 5px;
+input.form-control{
+border: 2px solid black;
+padding: 5px
 }
 
-div.center {
-  margin-top: 20px;
-  text-align: center;
+div.center{
+margin-top: 20px;
+text-align: center;
+
 }
 form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-top: 20px;
 }
 
 label {
-  margin-bottom: 10px;
+margin-bottom: 10px;
 }
 
 input,
 select {
-  padding: 5px;
-  margin-bottom: 10px;
-  width: 200px;
+padding: 5px;
+margin-bottom: 10px;
+width: 200px;
 }
 
-button.delete {
-  position: relative;
-  left: 85px;
+button.delete{
+position:relative;
+left:85px;
 }
 
 button {
-  padding: 10px 20px;
-  margin: 4px 2px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 12px;
+padding: 10px 20px;
+margin:4px 2px;
+background-color: #4caf50;
+color: white;
+border: none;
+cursor: pointer;
+border-radius: 12px;
 }
 
 button:hover {
-  background-color: #45a049;
+background-color: #45a049;
 }
 </style>
+
+
