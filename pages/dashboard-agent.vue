@@ -77,7 +77,9 @@
         <p class="card-text">{{ listing.location }}</p>
         <p class="card-text">{{ listing.description }}</p>
         <p class="card-text">${{ listing.price }}</p>
-        <p class="card-text">ID: {{ listing.id }}</p>
+        <p class="card-text">Property ID: {{ listing.id }}</p>
+        <p class="card-text">Seller ID: {{ listing.sellerId }}</p>
+        <p class="card-text">Status: On sale</p>
         <button class="btn" @click="showUpdatePrompt(listing.id)">
           Update Listing
         </button>
@@ -104,6 +106,7 @@ const newListing = ref({
   description: "",
   price: 0,
   sellerId: "",
+  status: ""
 });
 const listings = ref(null);
 const username = computed(() => sessionStorage.getItem("username"));
