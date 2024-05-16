@@ -174,4 +174,218 @@ export class userEntity {
       return { ok: false, message: error.message };
     }
   }
+  async viewUser(event: any, body: UserDto) {
+    try {
+      const response = await userSchema.find();
+
+      return {
+        ok: true,
+        users: response,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async viewAgents(event: any, body: UserDto) {
+    try {
+      const response = await userSchema.find({
+        role: "agent",
+      });
+
+      return {
+        ok: true,
+        users: response,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async createUser(event: any, body: UserDto) {
+    // Create user in the database
+    // Return the created user
+    try {
+      const response = await userSchema.create({
+        username: body.username,
+        email: body.email,
+        hashPassword: body.password,
+        role: body.role,
+      });
+      return { ok: true };
+    } catch (error: any) {
+      throw createError({
+        statusCode: 400,
+        message: error.message,
+      });
+    }
+  }
+
+  async deleteUser(event: any, body: UserDto) {
+    // Create profile in the database
+    // Return the created profile
+    try {
+      const response = await userSchema.deleteOne({
+        username: body.username,
+      });
+      return "User deleted successfully!";
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async searchUser(event: any, body: UserDto) {
+    try {
+      const users = await userSchema.find({
+        username: body.username,
+      });
+
+      return {
+        ok: true,
+        users: users,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async editUser(event: any, body: any) {
+    try {
+      const users = await userSchema.updateOne(
+        {
+          id: body.userId,
+        },
+        {
+          $set: {
+            username: body.username,
+          },
+        }
+      );
+
+      return {
+        ok: true,
+        users: users,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async editBuyerInfo(event: any, body: any) {
+    try {
+      const users = await userSchema.updateOne(
+        {
+          id: body.userId,
+        },
+        {
+          $set: {
+            email: body.email,
+          },
+        }
+      );
+
+      return {
+        ok: true,
+        users: users,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async addFavouriteListing(body: any) {
+    try {
+      const users = await userSchema.updateOne(
+        {
+          id: body.userId,
+        },
+        {
+          $push: { favourites: body.listingName },
+        }
+      );
+      const response = await listingSchema.findOneAndUpdate(
+        { id: body.listingId },
+        { $inc: { shortlistNumber: 1 } }
+      );
+      return {
+        ok: true,
+        users: users,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async deleteFavouriteListing(body: any) {
+    try {
+      const users = await userSchema.updateOne(
+        {
+          id: body.userId,
+        },
+        {
+          $pull: { favourites: body.listingName },
+        }
+      );
+      const response = await listingSchema.findOneAndUpdate(
+        { id: body.listingId },
+        { $inc: { shortlistNumber: -1 } }
+      );
+      return {
+        ok: true,
+        users: users,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async getFavouriteListing(body: any) {
+    try {
+      const users = await userSchema.find({
+        id: body.userId,
+      });
+      return {
+        ok: true,
+        users: users,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
 }
