@@ -5,7 +5,7 @@ import { UserDto } from "~/server/entity/dto/user.dto";
 export default defineEventHandler(async (event) => {
   const controller = new agentRatingController();
 
-  return await controller.addAgentRating(event);
+  return await controller.addBuyerRating(event);
 });
 
 // Gets data driectly from boundary layer
@@ -13,11 +13,11 @@ export default defineEventHandler(async (event) => {
 class agentRatingController {
   constructor() {}
 
-  async addAgentRating(event: any) {
+  async addBuyerRating(event: any) {
     const body: UserDto = await readBody(event);
     
     const userRepo = new userEntity();
-    return await userRepo.addAgentRating(body);
+    return await userRepo.addBuyerRating(body);
     
   }
 }

@@ -3,14 +3,14 @@ import { UserDto } from "~/server/entity/dto/user.dto";
 
 // CONTROLLER LAYER FOR POST delete PROFILE
 export default defineEventHandler(async (event) => {
-  const controller = new agentRatingController();
+  const controller = new editBuyerInfoController();
 
   return await controller.editBuyerInfo(event);
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class agentRatingController {
+class editBuyerInfoController {
   constructor() {}
 
   async editBuyerInfo(event: any) {

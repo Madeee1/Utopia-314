@@ -173,8 +173,7 @@ export class Listing {
     }
   }
 
-  async calculateMortgage(body: any) {  
-    console.log(body.listingId);
+  async calculateMortgage(body: any) { 
     try{
     const listings = await listingSchema.find({
       id:body.listingId, 
