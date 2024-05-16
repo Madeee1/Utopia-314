@@ -52,6 +52,7 @@ export const listingSchema = defineMongooseModel({
     status: {
       type: String,
       required: true,
+      default: "On Sale",
     },
   },
   hooks(schema) {
