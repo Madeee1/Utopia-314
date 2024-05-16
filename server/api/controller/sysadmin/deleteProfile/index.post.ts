@@ -3,21 +3,20 @@ import { profileDto } from "~/server/entity/dto/profile.dto";
 
 // CONTROLLER LAYER FOR POST delete PROFILE
 export default defineEventHandler(async (event) => {
-  const controller = new deletePController();
+  const controller = new deleteProfileController();
 
-  return await controller.deleteP(event);
+  return await controller.deleteProfile(event);
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class deletePController {
+class deleteProfileController {
   constructor() {}
 
-  async deleteP(event: any) {
+  async deleteProfile(event: any) {
     const body: profileDto = await readBody(event);
-    
+
     const profileRepo = new profileEntity();
-    return await profileRepo.deleteP(event, body);
-    
+    return await profileRepo.deleteProfile(event, body);
   }
 }
