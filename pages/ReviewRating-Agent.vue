@@ -36,7 +36,6 @@
 <script lang="ts" setup>
 const username = computed(() => sessionStorage.getItem("username"));
 const role = computed(() => sessionStorage.getItem("role"));
-const userId = computed(() => sessionStorage.getItem("userId"));
 const reviews = ref([]);
 const ratings = ref([]);
 
