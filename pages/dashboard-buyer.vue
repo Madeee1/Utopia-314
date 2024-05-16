@@ -11,7 +11,7 @@
 </nav>
 
 <div class="center">
-  <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded absolute top-4 left-4" @click="logout">
+  <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded absolute top-2 left-4" @click="logout">
       Log Out
   </button>
   <h2 class="text-2xl font-bold">Buyer Dashboard</h2>
@@ -45,6 +45,7 @@
       <input type="radio" v-model="selectedListing" :value="listing" name="listings"/>
       Name: {{ listing.name }},
       Location: {{ listing.location }}, 
+      Price: {{ listing.price }},
       Status: {{ listing.status }}
     </li>
       <button type="submit" @click.self="calculate">Calculate Mortgage</button>

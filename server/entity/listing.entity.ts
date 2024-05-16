@@ -84,7 +84,31 @@ export class Listing {
     try {
       const listings = await listingSchema.find({
         sellerId: parseInt(sellerIdQuery),
-      });
+      }, { views: 0, shortlistNumber: 0});
+      return { value: listings, ok: true };
+    } catch (error: any) {
+      return { value: false, ok: false, error: error.message };
+    }
+  }
+
+  async getSellerListingViews(sellerIdQuery: any) {
+    try {
+      const listings = await listingSchema.find(
+        { sellerId: parseInt(sellerIdQuery) },
+        { views: 1 }
+      );
+      return { value: listings, ok: true };
+    } catch (error: any) {
+      return { value: false, ok: false, error: error.message };
+    }
+  }
+
+  async getSellerListingShortlistCount(sellerIdQuery: any) {
+    try {
+      const listings = await listingSchema.find(
+        { sellerId: parseInt(sellerIdQuery) },
+        { shortlistNumber: 1 }
+      );
       return { value: listings, ok: true };
     } catch (error: any) {
       return { value: false, ok: false, error: error.message };
@@ -92,105 +116,103 @@ export class Listing {
   }
 
   async viewListings() {
-    try{
-    const listings = await listingSchema.find({
-      status: "On Sale",
-    });
-    const response = await listingSchema.updateMany(
-      { status: "On Sale" },
-      { $inc: { views: 1 } }
-    );
-    
-    return {
-      ok: true,
-      listings: listings,
-    };
-  }catch(error: any){
-    return { 
-      value: false, 
-      ok: false, 
-      error: error.message 
-    };
+    try {
+      const listings = await listingSchema.find({
+        status: "On Sale",
+      });
+      const response = await listingSchema.updateMany(
+        { status: "On Sale" },
+        { $inc: { views: 1 } }
+      );
+
+      return {
+        ok: true,
+        listings: listings,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
     }
   }
 
   async viewOldListing() {
-    try{
-    const listings = await listingSchema.find({
-      status: "Sold"
-    });
-    
-    return {
-      ok: true,
-      listings: listings,
-    };
-  }catch(error: any){
-    return { 
-      value: false, 
-      ok: false, 
-      error: error.message 
-    };
+    try {
+      const listings = await listingSchema.find({
+        status: "Sold",
+      });
+
+      return {
+        ok: true,
+        listings: listings,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
     }
   }
 
   async searchListing(body: any) {
-    try{
-    const listings = await listingSchema.find({
-      name:body.name, 
-      status: "On Sale",
-    });
-    
-    return {
-      ok: true,
-      listings: listings,
-    };
-  }catch(error: any){
-    return { 
-      value: false, 
-      ok: false, 
-      error: error.message 
-    };
+    try {
+      const listings = await listingSchema.find({
+        name: body.name,
+        status: "On Sale",
+      });
+
+      return {
+        ok: true,
+        listings: listings,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
     }
   }
 
   async searchOldListing(body: any) {
-    try{
-    const listings = await listingSchema.find({
-      name:body.name, 
-      status: "Sold"
-    });
-    
-    return {
-      ok: true,
-      listings: listings,
-    };
-  }catch(error: any){
-    return { 
-      value: false, 
-      ok: false, 
-      error: error.message 
-    };
-    }
-  }
+    try {
+      const listings = await listingSchema.find({
+        name: body.name,
+        status: "Sold",
+      });
 
-  async calculateMortgage(body: any) { 
-    try{
-    const listings = await listingSchema.find({
-      id:body.listingId, 
-    }
-  );
-    
-    return {
-      ok: true,
-      listings: listings,
-    };
-    }catch(error: any){
-      return { 
-        value: false, 
-        ok: false, 
-        error: error.message 
+      return {
+        ok: true,
+        listings: listings,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
       };
     }
   }
-  
+
+  async calculateMortgage(body: any) {
+    try {
+      const listings = await listingSchema.find({
+        id: body.listingId,
+      });
+
+      return {
+        ok: true,
+        listings: listings,
+      };
+    } catch (error: any) {
+      return {
+        value: false,
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
 }

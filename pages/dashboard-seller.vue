@@ -86,6 +86,8 @@ const router = useRouter();
 
 onMounted(async () => {
   await fetchListings();
+  await fetchViews();
+  await fetchShortlist();
 });
 
 async function fetchListings() {
@@ -95,6 +97,28 @@ async function fetchListings() {
     )}`
   );
   listings.value = response.value;
+}
+
+async function fetchViews() {
+  const response = await $fetch(
+    `/api/controller/listing/seller/views?sellerId=${sessionStorage.getItem(
+      "userId"
+    )}`
+  );
+  for (let i = 0; i < listings.value.length; i++) {
+    listings.value[i].views = response.value[i].views;
+  }
+}
+
+async function fetchShortlist() {
+  const response = await $fetch(
+    `/api/controller/listing/seller/shortlist?sellerId=${sessionStorage.getItem(
+      "userId"
+    )}`
+  );
+  for (let i = 0; i < listings.value.length; i++) {
+    listings.value[i].shortlistNumber = response.value[i].shortlistNumber;
+  }
 }
 
 function moveToProfile() {
