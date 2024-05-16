@@ -12,7 +12,7 @@
 
 <div class="center">
   <button
-        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded absolute top-4 left-4"
+        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded absolute top-2 left-4"
         @click="logout"
       >
         Log Out
