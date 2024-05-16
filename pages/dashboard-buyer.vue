@@ -313,6 +313,7 @@ export default {
           body: JSON.stringify({
             userId : this.sessionUserId,
             listingName : this.selectedFavourite,
+            listingId: this.selectedFavourite.id,
           }),
     });
         if (deleteFav.ok) {
@@ -337,6 +338,7 @@ export default {
             userId : this.sessionUserId,
             listingName : this.selectedListing.name,
             listingLocation : this.selectedListing.location,
+            listingId: this.selectedListing.id,
           }),
     });
         if (addFav.ok) {

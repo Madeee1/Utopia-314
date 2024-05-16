@@ -327,6 +327,10 @@ export class userEntity {
           $push: { favourites: body.listingName },
         }
       );
+      const response = await listingSchema.findOneAndUpdate(
+        { id: body.listingId },
+        { $inc: { shortlistNumber: 1 } }
+      );
       return {
         ok: true,
         users: users,
@@ -349,6 +353,10 @@ export class userEntity {
         {
           $pull: { favourites: body.listingName },
         }
+      );
+      const response = await listingSchema.findOneAndUpdate(
+        { id: body.listingId },
+        { $inc: { shortlistNumber: -1 } }
       );
       return {
         ok: true,

@@ -96,6 +96,10 @@ export class Listing {
     const listings = await listingSchema.find({
       status: "On Sale",
     });
+    const response = await listingSchema.updateMany(
+      { status: "On Sale" },
+      { $inc: { views: 1 } }
+    );
     
     return {
       ok: true,
