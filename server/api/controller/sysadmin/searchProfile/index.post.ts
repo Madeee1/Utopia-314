@@ -3,20 +3,20 @@ import { profileDto } from "~/server/entity/dto/profile.dto";
 
 // CONTROLLER LAYER FOR POST CREATE PROFILE
 export default defineEventHandler(async (event) => {
-  const controller = new searchPController();
+  const controller = new searchProfileController();
 
-  return await controller.searchP(event);
+  return await controller.searchProfile(event);
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class searchPController {
+class searchProfileController {
   constructor() {}
 
-  async searchP(event: any) {
+  async searchProfile(event: any) {
     const body: profileDto = await readBody(event);
 
     const profileRepo = new profileEntity();
-    return await profileRepo.searchP(event, body);
+    return await profileRepo.searchProfile(event, body);
   }
 }

@@ -3,14 +3,14 @@ import { UserDto } from "~/server/entity/dto/user.dto";
 
 // CONTROLLER LAYER FOR POST CREATE PROFILE
 export default defineEventHandler(async (event) => {
-  const controller = new searchUController();
+  const controller = new searchUserController();
 
   return await controller.searchUser(event);
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class searchUController {
+class searchUserController {
   constructor() {}
 
   async searchUser(event: any) {

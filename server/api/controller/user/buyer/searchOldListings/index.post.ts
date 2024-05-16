@@ -2,14 +2,14 @@ import { Listing } from "~/server/entity/listing.entity";
 
 // CONTROLLER LAYER FOR POST CREATE PROFILE
 export default defineEventHandler(async (event) => {
-  const controller = new searchOController();
+  const controller = new searchOldListingController();
 
   return await controller.searchOldListing(event);
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class searchOController {
+class searchOldListingController {
   constructor() {}
 
   async searchOldListing(event: any) {

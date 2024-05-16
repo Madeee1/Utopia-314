@@ -3,20 +3,20 @@ import { profileDto } from "~/server/entity/dto/profile.dto";
 
 // CONTROLLER LAYER FOR POST CREATE PROFILE
 export default defineEventHandler(async (event) => {
-  const controller = new viewPController();
+  const controller = new viewProfileController();
 
-  return await controller.viewP(event);
+  return await controller.viewProfile(event);
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class viewPController {
+class viewProfileController {
   constructor() {}
 
-  async viewP(event: any) {
+  async viewProfile(event: any) {
     const body: profileDto = await readBody(event);
 
     const profileRepo = new profileEntity();
-    return await profileRepo.viewP(event, body);
+    return await profileRepo.viewProfile(event, body);
   }
 }

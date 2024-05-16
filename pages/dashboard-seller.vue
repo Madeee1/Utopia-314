@@ -9,9 +9,7 @@
       </button>
       <button class="btn absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
         @click="moveToProfile">Update Profile</button>
-        <!-- tEMPORARY Sold Properties Button till Buyer page completed -->
-      <button class="btn  absolute top-24 left-4 bg-pink-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-        @click="mysold">Sold properties</button>
+        
     </div>
     <div
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"

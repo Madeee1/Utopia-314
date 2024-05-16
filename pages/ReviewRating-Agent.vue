@@ -36,16 +36,16 @@
 <script lang="ts" setup>
 const username = computed(() => sessionStorage.getItem("username"));
 const role = computed(() => sessionStorage.getItem("role"));
-const userId = computed(() => sessionStorage.getItem("userId"));
 const reviews = ref([]);
 const ratings = ref([]);
 
 onMounted(() => {
-  getReviews();
-  getRatings();
+  const userId = sessionStorage.getItem("userId");
+  getReviews(userId);
+  getRatings(userId);
 });
 
-async function getReviews() {
+async function getReviews(userId: string | null) {
   // fetch reviews
   const response: any = await $fetch(
     "/api/controller/user/agent/reviews?userId=" + userId
@@ -58,7 +58,7 @@ async function getReviews() {
   }
 }
 
-async function getRatings() {
+async function getRatings(userId: string | null) {
   const response: any = await $fetch(
     "/api/controller/user/agent/ratings?userId=" + userId
   );
