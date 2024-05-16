@@ -1,22 +1,23 @@
 import { userEntity } from "~/server/entity/user.entity";
 import { UserDto } from "~/server/entity/dto/user.dto";
 
-// CONTROLLER LAYER FOR POST CREATE PROFILE
+// CONTROLLER LAYER FOR POST delete PROFILE
 export default defineEventHandler(async (event) => {
-  const controller = new suspendUController();
+  const controller = new createUController();
 
-  return await controller.suspendUser(event);
+  return await controller.createUser(event);
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class suspendUController {
+class createUController {
   constructor() {}
 
-  async suspendUser(event: any) {
+  async createUser(event: any) {
     const body: UserDto = await readBody(event);
-
-    const profileRepo = new userEntity();
-    return await profileRepo.suspendUser(event, body);
+    
+    const userRepo = new userEntity();
+    return await userRepo.createUser(event, body);
+    
   }
 }

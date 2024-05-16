@@ -2,20 +2,20 @@ import { Listing } from "~/server/entity/listing.entity";
 
 // CONTROLLER LAYER FOR POST CREATE PROFILE
 export default defineEventHandler(async (event) => {
+  const controller = new searchLController();
 
-  const controller = new CMController();
-  return await controller.calculateMortgage(event);
+  return await controller.searchListing(event);
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class CMController {
+class searchLController {
   constructor() {}
 
-  async calculateMortgage(event: any) {
+  async searchListing(event: any) {
     const body = await readBody(event);
 
     const profileRepo = new Listing();
-    return await profileRepo.calculateMortgage(body);
+    return await profileRepo.searchListing(body);
   }
 }

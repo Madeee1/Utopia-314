@@ -25,20 +25,41 @@ export class profileEntity {
   }
 
   async viewP(event:any, body: profileDto) {
-      const profiles = await profileSchema.find({}, {profile:1, _id:0});
+    try{
+      const profiles = await profileSchema.find();
       
       return {
+        ok: true,
         profiles: profiles,
       };
-    }
+    }catch(error: any){
+      return { 
+        value: false, 
+        ok: false, 
+        error: error.message 
+      };
+      }
+  }
 
     async searchP(event:any, body: profileDto) {
-      const profiles = await profileSchema.find({profile:body.profile}, {profile:1, _id:0});
+      try{
+      const profiles = await profileSchema.find(
+        {
+          profile:body.profile
+        });
       
       return {
+        ok : true,
         profiles: profiles,
       };
-    }
+    }catch(error: any){
+      return { 
+        value: false, 
+        ok: false, 
+        error: error.message 
+      };
+      }
+  }
 
     async deleteP(event: any, body: profileDto) {
       // Create profile in the database
@@ -48,12 +69,36 @@ export class profileEntity {
           profile: body.profile,
         });
         return "Profile deleted successfully!";
-      } catch (error: any) {
-        throw createError({
-          statusCode: 400,
-          message: error.message,
-        });
-      }
+      } catch(error: any){
+        return { 
+          value: false, 
+          ok: false, 
+          error: error.message 
+        };
+        }
     }
+
+    async suspendProfile(event: any, body: any) {
+      try{
+      const profiles = await profileSchema.updateOne(
+        {
+          profile: body.profile
+        }, 
+        {
+          "$set":{suspended: true
+        }});
+  
+      return { 
+        ok: true, 
+        profiles: profiles 
+      };
+    }catch(error: any){
+      return { 
+        value: false, 
+        ok: false, 
+        error: error.message 
+      };
+      }
   }
+}
 

@@ -2,19 +2,19 @@ import { Listing } from "~/server/entity/listing.entity";
 
 // CONTROLLER LAYER FOR POST CREATE PROFILE
 export default defineEventHandler(async () => {
-  const controller = new viewLController();
+  const controller = new viewOController();
 
-  return await controller.viewListings();
+  return await controller.viewOldListing();
 });
 
 // Gets data driectly from boundary layer
 // Does business logic here, and constructs entity object to interact with database
-class viewLController {
+class viewOController {
   constructor() {}
 
-  async viewListings() {
+  async viewOldListing() {
 
     const profileRepo = new Listing();
-    return await profileRepo.viewListings();
+    return await profileRepo.viewOldListing();
   }
 }

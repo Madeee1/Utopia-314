@@ -34,6 +34,10 @@ export const userSchema = defineMongooseModel({
       unique: true,
       default: () => new Types.ObjectId(),
     },
+    favourites: {
+      type: [String],
+      required: false,
+    },
     reviews: {
       type: [String],
       required: false,

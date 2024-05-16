@@ -49,6 +49,10 @@ export const listingSchema = defineMongooseModel({
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      required: true,
+    },
   },
   hooks(schema) {
     // Add a hook so that the id field is auto-incremented
